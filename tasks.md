@@ -1,7 +1,7 @@
 
 # J's Jewellery — Task Tracker
 
-**Status:** T006 homepage complete — 4 November 2026. T003A baseline, T004 design tokens, T005 header/navigation/footer, and T006 homepage sections are verified; product data and store features have not started.  
+**Status:** T007 responsive verification complete — 4 November 2026. T003A baseline, T004 design tokens, T005 header/navigation/footer, T006 homepage sections, and T007 responsive layouts are verified; product data and store features have not started.  
 **Rule:** Do not mark a task DONE until its acceptance criteria have been verified.
 
 ## Status Definitions
@@ -185,14 +185,34 @@
 **Known scope boundary:** Collection, search, cart, and policy destinations are linked but belong to T008, T011, T017, and T029. Homepage product areas remain empty states until approved supplier-backed product data exists. The hero campaign panel remains a labelled placeholder until the owner approves artwork, and WhatsApp access remains omitted until a store number is configured.
 
 ### T007 — Verify responsive layouts
-**Status:** NOT_STARTED
+**Status:** DONE  
+**Completed:** 4 November 2026. Shared header, mobile navigation, footer, homepage hero, category grid, and empty states verified at ten mobile, tablet, and desktop viewports. One card-height defect was found and fixed. No products, discounts, reviews, or delivery promises were added.
 
-- [ ] Test small mobile viewport.
-- [ ] Test tablet viewport.
-- [ ] Test desktop viewport.
-- [ ] Fix overflow, unreadable text, and broken layouts.
+- [x] Test small mobile viewport.
+- [x] Test tablet viewport.
+- [x] Test desktop viewport.
+- [x] Fix overflow, unreadable text, and broken layouts.
 
 **Acceptance criteria:** Core pages remain usable at the tested sizes.
+
+**Verification evidence (4 November 2026):**
+- Tested viewports: 320×568, 360×800, 390×844, 568×320 (mobile), 768×1024, 834×1112, 1024×768 (tablet), 1280×900, 1440×1000, and 1920×1080 (desktop).
+- No horizontal overflow at any viewport, including with the mobile menu open. Document scroll width matched the client width throughout.
+- Header switches from the mobile menu toggle to desktop navigation at 768px. The toggle is 44×44px and reachable as the third desktop/mobile tab stop.
+- Category grid renders 1 column below 640px, 2 columns from 640px, and 4 columns from 1024px.
+- Footer renders 1 column below 640px, 2 columns from 640px, and 4 columns from 1024px.
+- Mobile menu opened at every mobile viewport with 13 links, all visible, `aria-expanded` set correctly, and no overflow. Enter opens the menu; Escape closes it, restores focus to the toggle, and updates the label.
+- Keyboard tab order follows the visual order: skip link, header links, hero actions, category cards, empty-state links, then footer links. Every stop has a visible 2px focus ring with no clipping: obsidian on light surfaces and champagne on dark surfaces.
+- Text checks found no clipped body text and no text below 12px. The only flagged clipping is the intentionally hidden `sr-only` skip link before focus, which becomes a visible 126×44px control on focus.
+- No overlapping interactive elements were detected at any viewport, and no element spilled outside the viewport.
+- Empty-state panels stayed inside their containers at every viewport.
+- **Defect found:** at 1024px and wider, the second category row rendered at `112/112/112/138px` because the grid item stretched but the card link did not, leaving the Customized Name Jewellery card 26px taller.
+- **Fix:** added `h-full` to the category card link in `components/home/CategoryNavigation.tsx`. The second row now measures `138/138/138/138px` and the first row `112/112/112/112px`, with equal card bottoms in every row.
+- After the fix, all responsive, keyboard, and menu checks were rerun with no regressions.
+- `npm run lint` → exit 0. `npm run typecheck` → exit 0. `npm run check:contrast` → exit 0 (all 12 checks). `npm run build` → exit 0 with static `/` and `/_not-found`.
+- Screenshots captured after the fix: `t007-320-top.png`, `t007-390-top.png`, `t007-390-menu.png`, `t007-768-top.png`, `t007-1024-top.png`, `t007-1440-top.png`, `t007-390-full.png`, and `t007-1440-full.png`. Temporary files are outside the repository.
+
+**Known scope boundary:** This task verified layout only. Collection, search, cart, and policy destinations are still owned by T008, T011, T017, and T029. Some inline text links are narrower than 44px but at least 24px wide and 44px tall, meeting WCAG 2.2 AA target size; no visual change was made. The logo link measures 106×25.3px and was left unchanged.
 
 ---
 
@@ -784,9 +804,9 @@ Supplier-specific work is now covered by T013A, T018A, T025A, T025B, T026A, T026
 
 ## Current Execution Rule
 
-T006 is complete and verified. The next task is **T007 — Verify responsive layouts**, which requires owner approval before it starts.
+T007 is complete and verified. The next task is **T008 — Implement the eight collections**, which requires owner approval before it starts.
 
-Do not start T007 or any feature task until the owner approves the verified homepage.
+Do not start T008 or any feature task until the owner approves the verified responsive layouts.
 
 Supplier-related sequence after their prerequisites: **T013A → T018A → T025A → T025B → T026A → T026B → T027A → T038A**. Do not skip the supplier data model or availability verification.
 

@@ -23,7 +23,7 @@ export function CategoryNavigation() {
             <li key={link.href}>
               <Link
                 href={link.href}
-                className="group flex min-h-28 flex-col justify-between rounded-brand border border-charcoal/15 bg-white p-5 transition-colors hover:border-gold focus-visible:outline-offset-4"
+                className="group flex h-full min-h-28 flex-col justify-between rounded-brand border border-charcoal/15 bg-white p-5 transition-colors hover:border-gold focus-visible:outline-offset-4"
               >
                 <span className="font-serif text-xl text-obsidian">
                   {link.label}
