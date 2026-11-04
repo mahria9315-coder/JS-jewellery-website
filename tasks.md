@@ -1,7 +1,7 @@
 
 # J's Jewellery — Task Tracker
 
-**Status:** T011 search, filtering, and sorting verified — 4 November 2026. T003A baseline, T004 design tokens, T005 header/navigation/footer, T006 homepage sections, T007 responsive layouts, T008 collections, T009 product listing, T010 product details, and T011 search/filtering/sorting are verified. The production catalogue remains intentionally empty until approved supplier-backed product records exist; cart and later store features have not started.  
+**Status:** T035 marketing integration documentation, T036 payment-provider evaluation, and T037 static checks verified — 4 November 2026. T003A baseline, T004 design tokens, T005 header/navigation/footer, T006 homepage sections, T007 responsive layouts, T008 collections, T009 product listing, T010 product details, and T011 search/filtering/sorting are verified. The production catalogue remains intentionally empty until approved supplier-backed product records exist; cart, checkout, payments, admin, and live integrations have not started.  
 **Rule:** Do not mark a task DONE until its acceptance criteria have been verified.
 
 ## Status Definitions
@@ -678,42 +678,71 @@
 **Acceptance criteria:** Structured data reflects actual configured product information.
 
 ### T035 — Document marketing integrations
-**Status:** NOT_STARTED
+**Status:** DONE  
+**Completed:** 4 November 2026.
 
-- [ ] Record Meta Pixel requirements.
-- [ ] Record Google Analytics requirements.
-- [ ] Record Instagram integration needs.
-- [ ] Identify required credentials and consent behaviour.
-- [ ] Integrate only approved, configured services.
+- [x] Record Meta Pixel requirements.
+- [x] Record Google Analytics requirements.
+- [x] Record Instagram integration needs.
+- [x] Identify required credentials and consent behaviour.
+- [x] Integrate only approved, configured services.
 
 **Acceptance criteria:** Integrations are labelled accurately as working, pending, or blocked.
 
-### T036 — Evaluate payment-provider integrations
-**Status:** NOT_STARTED
+**Verification evidence (4 November 2026):**
+- Added `MARKETING_INTEGRATIONS.md`, covering Meta Pixel, Meta advertising, Google Analytics 4, Instagram, and search-engine tools, with inputs from `spec.md` §15–§16, `AGENTS.md` §6/§9/§11, and `plan.md` §5.1.
+- Every integration is labelled **BLOCKED** or **PENDING**; none is labelled WORKING. Meta Pixel, Meta advertising, GA4, and Instagram are BLOCKED on owner-provided credentials, an approved consent mechanism, and approved privacy wording. Search-engine tools are PENDING the approved domain and hosting.
+- Recorded the required identifiers and credentials without values, including ownership, secure-storage expectations, and the rule that credentials are never committed or pasted into chat. No credential was created or configured.
+- Documented consent behaviour: no non-essential tracking before consent, no pre-ticked or asymmetric choices, withdrawal support, data minimisation, no personal data in analytics, and no unsupported legal-compliance claim. The privacy-policy wording remains PENDING.
+- Documented an activation gate that requires owner approval, secure credentials, approved consent and privacy wording, review, and recorded testing before any integration can be marked WORKING.
+- No tracking script, tag manager, SDK, cookie, paid service, environment variable, network call, or dependency was added. No service was integrated, so the “integrate only approved, configured services” requirement is satisfied by not integrating any unapproved service.
 
-- [ ] Document the COD settlement workflow as PENDING until the owner confirms who collects payment and who pays the supplier.
-- [ ] Verify Easypaisa merchant/API requirements.
-- [ ] Verify JazzCash merchant/API requirements.
-- [ ] Define bank-transfer verification.
-- [ ] Document customer-payment and supplier-settlement responsibilities separately.
-- [ ] Document provider access and approval dependencies.
-- [ ] Test real integrations only when authorized and credentials are available.
+### T036 — Evaluate payment-provider integrations
+**Status:** DONE  
+**Completed:** 4 November 2026.
+
+- [x] Document the COD settlement workflow as PENDING until the owner confirms who collects payment and who pays the supplier.
+- [x] Verify Easypaisa merchant/API requirements.
+- [x] Verify JazzCash merchant/API requirements.
+- [x] Define bank-transfer verification.
+- [x] Document customer-payment and supplier-settlement responsibilities separately.
+- [x] Document provider access and approval dependencies.
+- [x] Test real integrations only when authorized and credentials are available.
 
 **Acceptance criteria:** No payment provider or settlement workflow is described as working without a tested implementation and owner-approved terms.
+
+**Verification evidence (4 November 2026):**
+- Added `PAYMENT_INTEGRATIONS.md`, covering COD, bank transfer, Easypaisa, JazzCash, and the separation of customer payment from supplier settlement.
+- Every method is labelled **PENDING**, **BLOCKED**, or **OUT OF SCOPE**; none is labelled WORKING. COD is PENDING because who collects payment, who pays the supplier, delivery-cost responsibility, evidence, and reconciliation are unconfirmed. Bank transfer is BLOCKED on approved bank details and a verification workflow. Easypaisa and JazzCash are BLOCKED on merchant eligibility, access, and provider approval. Card payments remain out of scope, and card details must never be stored.
+- COD documentation records the decision points and three illustrative settlement models, explicitly marked as not approved or selected. It does not choose a model on the owner’s behalf.
+- Public provider research was performed on 4 November 2026 and recorded with sources: the official Easypaisa business site and corporate onboarding portal confirm a merchant/business offering and onboarding channel; the official JazzCash Payment Gateway page confirms an online gateway with mobile-account and voucher flows, real-time confirmation, and applicable MDR. These pages do not establish J’s Jewellery’s eligibility, access, or approval. The official JazzCash sandbox documentation could not be retrieved, so its API details are explicitly marked unverified.
+- Bank-transfer verification is documented as manual: approved bank details, customer proof, verification by an authorised administrator against the actual bank record, recorded verifier/time/reference, and no automatic Paid status. No bank details were added.
+- Customer payment and supplier settlement are documented as separate records with separate statuses, evidence, and permissions. Paying a supplier is explicitly not evidence of customer payment, and neither proves fulfilment.
+- Documented provider access dependencies, security constraints (server-side totals, callback verification, idempotency, no card data, no secrets in source), the testing policy, and an activation gate.
+- No payment package, checkout route, order model, webhook, credential, account, or environment variable was added. No real or simulated payment was made; the “test only when authorized” requirement is satisfied by performing no provider test without authorization.
 
 ---
 
 ## Phase 9 — Quality Assurance
 
 ### T037 — Run static checks
-**Status:** NOT_STARTED
+**Status:** DONE  
+**Completed:** 4 November 2026.
 
-- [ ] Run linting.
-- [ ] Run TypeScript checks.
-- [ ] Run the production build.
-- [ ] Resolve or document failures.
+- [x] Run linting.
+- [x] Run TypeScript checks.
+- [x] Run the production build.
+- [x] Resolve or document failures.
 
 **Acceptance criteria:** Relevant checks pass, or remaining failures are clearly documented.
+
+**Verification evidence (4 November 2026):**
+- `npm run lint` — passed with no errors or warnings.
+- `npm run typecheck` — passed (`tsc --noEmit`, no errors).
+- `npm run check:contrast` — passed all 12 WCAG checks: body text on white 19.91:1; secondary text on white 17.58:1; text on champagne 14.67:1; text on obsidian 19.91:1; text on charcoal 17.58:1; champagne on obsidian 14.67:1; gold on obsidian 8.20:1; gold on charcoal 7.24:1; obsidian on gold 8.20:1; obsidian focus ring on white 19.91:1; champagne focus ring on obsidian 14.67:1; gold on white 2.43:1 (correctly required to remain decorative).
+- `npm run build` — passed with Next.js 16.4.5 (Turbopack). Compiled successfully; TypeScript finished; 16/16 static pages generated. Routes built: `/`, `/_not-found`, `/collections`, `/collections/[slug]` (partially prerendered, with eight collection paths), `/not-found`, `/products/[slug]` (partially prerendered), and `/search` (partially prerendered). Proxy middleware built successfully.
+- Environment recorded: Node.js 24.21.0, npm 11.19.0. No unresolved build, lint, type, or contrast failures.
+- Known limitation: a pre-existing development-time warning on `/collections/[slug]` (route `params` accessed outside `<Suspense>`) was previously observed during T011. It does not fail lint, typecheck, or the production build and is not caused by T035–T037, but remains an existing quality issue outside this batch’s scope.
 
 ### T038 — Test the customer journey
 **Status:** NOT_STARTED
@@ -843,9 +872,11 @@ Supplier-specific work is now covered by T013A, T018A, T025A, T025B, T026A, T026
 
 ## Current Execution Rule
 
-T008, T009, T010, and T011 are complete and verified. The production catalogue is intentionally empty until approved supplier-backed product records exist.
+T008–T011 and T035–T037 are complete and verified. The production catalogue is intentionally empty until approved supplier-backed product records exist. No marketing or payment integration is live.
 
-The next task is **T012 — Implement product image handling**, which requires owner approval before it starts. Do not start T012 or any later feature task without that approval. T009/T010/T011 live product-data verification remains dependent on T013A/T014. T012 also depends on the owner decision for image storage, which is still PENDING.
+T012–T034 remain blocked or dependent: T012 needs the PENDING image-storage decision; T013 needs a PostgreSQL provider and connection; T013A needs T013 plus approved supplier data; T014 needs T013/T013A; T015/T016 need approved customization options and supplier confirmation; T017–T031 depend on cart, checkout, orders, admin, policies, or other owner decisions; T032/T033 need the approved domain; T034 needs real product data. Do not invent the missing decisions or data.
+
+T038 and T039 cannot start until cart, checkout, orders, and admin exist. The next safe owner-approved batch is **T040 (responsive design and accessibility) and T041 (performance)**, which can be tested against the current public pages. T042–T044 remain blocked on hosting, domain, database, and explicit production approval.
 
 Supplier-related sequence after their prerequisites: **T013A → T018A → T025A → T025B → T026A → T026B → T027A → T038A**. Do not skip the supplier data model or availability verification.
 
