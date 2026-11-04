@@ -1,7 +1,7 @@
 
 # J's Jewellery — Task Tracker
 
-**Status:** T005 shared layout complete — 4 November 2026. T003A baseline, T004 design tokens, and T005 header/navigation/footer are verified; store features have not started.  
+**Status:** T006 homepage complete — 4 November 2026. T003A baseline, T004 design tokens, T005 header/navigation/footer, and T006 homepage sections are verified; product data and store features have not started.  
 **Rule:** Do not mark a task DONE until its acceptance criteria have been verified.
 
 ## Status Definitions
@@ -151,16 +151,38 @@
 **Known scope boundary:** Collection, search, cart, and policy destinations are linked but not implemented; they belong to T008, T011, T017, and T029. The production build initially failed because a dynamic copyright year used `new Date()` during prerender under Cache Components; it was replaced with a static copyright line rather than forcing dynamic rendering.
 
 ### T006 — Implement homepage
-**Status:** NOT_STARTED
+**Status:** DONE  
+**Completed:** 4 November 2026. Homepage hero, category navigation, product showcases, and honest empty states implemented and verified. No products, discounts, reviews, or delivery promises were invented.
 
-- [ ] Add hero content and Shop Now action.
-- [ ] Add category navigation.
-- [ ] Add New Arrivals.
-- [ ] Add Best Sellers.
-- [ ] Add Special Offers.
-- [ ] Add appropriate empty states.
+- [x] Add hero content and Shop Now action.
+- [x] Add category navigation.
+- [x] Add New Arrivals.
+- [x] Add Best Sellers.
+- [x] Add Special Offers.
+- [x] Add appropriate empty states.
 
 **Acceptance criteria:** Homepage sections use configured data and do not invent products or discounts.
+
+**Verification evidence (4 November 2026):**
+- `app/page.tsx` composes the homepage inside the existing shared layout and adds accurate homepage metadata.
+- `components/home/HomeHero.tsx` provides the dark hero, serif `h1`, supporting copy, a gold **Shop Now** link to `/collections`, and a **Search jewellery** link to `/search`.
+- The hero contains a decorative campaign panel with the visible caption "Campaign imagery placeholder — awaiting owner-approved artwork." No unapproved image was used.
+- `components/home/CategoryNavigation.tsx` renders all eight approved collections from `lib/site-navigation.ts`, linked to their planned collection routes.
+- `components/home/HomeShowcase.tsx` provides a reusable section with clearly labelled **Placeholder** panels for New Arrivals, Best Sellers, Special Offers, and Featured Jewellery.
+- Product sections use honest empty states because no configured product data exists. No product names, prices, stock counts, ratings, reviews, or sales rankings were fabricated.
+- Special Offers states "No current offers" because no genuine configured discounts exist.
+- WhatsApp contact was not added because no store number has been configured.
+- Browser verification at 390px: one `h1`; section headings are Shop by category, New Arrivals, Best Sellers, Special Offers, and Featured Jewellery; all 8 category links resolve to the approved collection paths; 4 labelled placeholder sections are present.
+- Browser verification at 1280px: desktop navigation visible, category grid uses 4 columns, and `h1` renders at 60px in the serif stack.
+- Responsive checks at 360px, 390px, 768px, 1024px, 1280px, and 1440px: no horizontal overflow, including the open mobile menu. Category columns progress from 1 to 2 to 4 as the viewport grows.
+- Keyboard verification from a fresh desktop load: the skip link is the first tab stop; Shop Now is the eighth tab stop with a visible 2px champagne outline (`14.67:1`) on the dark hero. The Search jewellery link also settles on the champagne ring.
+- Mobile menu preserved: 13 links, `aria-expanded` switches correctly, and Escape closes the panel and returns focus to the toggle.
+- Landmarks preserved: exactly one `<header>`, one `<main>`, and one `<footer>`.
+- Automated page-text checks found no PKR/Rs price values, stock counts, star ratings, or delivery promises.
+- `npm run lint` → exit 0. `npm run typecheck` → exit 0. `npm run check:contrast` → exit 0 (all 12 checks). `npm run build` → exit 0 with static `/` and `/_not-found`.
+- Screenshots captured at 390px and 1280px for review; the temporary files are outside the repository.
+
+**Known scope boundary:** Collection, search, cart, and policy destinations are linked but belong to T008, T011, T017, and T029. Homepage product areas remain empty states until approved supplier-backed product data exists. The hero campaign panel remains a labelled placeholder until the owner approves artwork, and WhatsApp access remains omitted until a store number is configured.
 
 ### T007 — Verify responsive layouts
 **Status:** NOT_STARTED
@@ -762,9 +784,9 @@ Supplier-specific work is now covered by T013A, T018A, T025A, T025B, T026A, T026
 
 ## Current Execution Rule
 
-T005 is complete and verified. The next task is **T006 — Implement homepage**, which requires owner approval before it starts.
+T006 is complete and verified. The next task is **T007 — Verify responsive layouts**, which requires owner approval before it starts.
 
-Do not start T006 or any feature task until the owner approves the verified shared layout.
+Do not start T007 or any feature task until the owner approves the verified homepage.
 
 Supplier-related sequence after their prerequisites: **T013A → T018A → T025A → T025B → T026A → T026B → T027A → T038A**. Do not skip the supplier data model or availability verification.
 
