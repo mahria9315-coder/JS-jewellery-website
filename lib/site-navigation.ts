@@ -6,8 +6,8 @@ export type NavItem = {
 };
 
 /**
- * Primary navigation. Destination routes for search and cart are implemented
- * in later approved tasks (T011, T017).
+ * Primary navigation. The catalogue search route is implemented in T011; the
+ * cart destination is implemented in later approved task T017.
  */
 export const primaryLinks: NavItem[] = [
   { label: "Home", href: "/" },

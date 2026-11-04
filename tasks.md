@@ -1,7 +1,7 @@
 
 # J's Jewellery — Task Tracker
 
-**Status:** T010 product details verified — 4 November 2026. T003A baseline, T004 design tokens, T005 header/navigation/footer, T006 homepage sections, T007 responsive layouts, T008 collections, T009 product listing, and T010 product details are verified. The production catalogue remains intentionally empty until approved supplier-backed product records exist; cart, search, and later store features have not started.  
+**Status:** T011 search, filtering, and sorting verified — 4 November 2026. T003A baseline, T004 design tokens, T005 header/navigation/footer, T006 homepage sections, T007 responsive layouts, T008 collections, T009 product listing, T010 product details, and T011 search/filtering/sorting are verified. The production catalogue remains intentionally empty until approved supplier-backed product records exist; cart and later store features have not started.  
 **Rule:** Do not mark a task DONE until its acceptance criteria have been verified.
 
 ## Status Definitions
@@ -283,15 +283,27 @@
 - `npm run lint`, `npm run typecheck`, `npm run check:contrast`, and `npm run build` all passed. Screenshots: `t010-product-detail.png`, `t010-product-unavailable.png`, `t010-product-mobile.png`.
 
 ### T011 — Implement search, filtering, and sorting
-**Status:** NOT_STARTED
+**Status:** DONE  
+**Completed:** 4 November 2026.
 
-- [ ] Search by product name.
-- [ ] Filter by collection.
-- [ ] Add price sorting where appropriate.
-- [ ] Add relevant supported filters.
-- [ ] Handle zero matching products.
+- [x] Search by product name.
+- [x] Filter by collection.
+- [x] Add price sorting where appropriate.
+- [x] Add relevant supported filters.
+- [x] Handle zero matching products.
 
 **Acceptance criteria:** Controls return correct results and work on mobile.
+
+**Verification evidence (4 November 2026):**
+- Added `/search` as a server-rendered catalogue search page. `lib/catalogue-query.ts` validates untrusted URL values, filters by product name, collection, and availability, and sorts by price. `components/catalogue/SearchControls.tsx` is a native GET form, so results work without client-side JavaScript and every result set has a shareable URL. `components/catalogue/SearchExperience.tsx` renders results or honest empty states.
+- Search matches product names case-insensitively and ignores surrounding or repeated whitespace. Collection filtering supports all eight approved collections, including products assigned to more than one collection. Availability filtering covers the three structured statuses: in stock, currently unavailable, and availability pending verification. Price sorting offers default order, low to high, and high to low with a deterministic name/slug tie-break.
+- Verified with clearly labelled temporary fixtures that were removed before commit: `q=pearl` and `q=PEARL` returned only the pearl fixture; `collection=womens-jewellery` returned the two matching fixtures; `collection=rings` returned one; price ascending and descending orders were correct; each availability filter returned the expected subset; a combined search/collection/sort query returned the expected single result; unknown query values fell back to safe defaults; and a real form submission produced `/search?q=silver&collection=mens-jewellery&availability=all&sort=price-desc` with the correct single result.
+- Zero-result searches show “No products found”, report “Showing 0 of 4 products”, and name the searched term. With the production catalogue empty, `/search` shows “The catalogue is empty” with the approved-data explanation while keeping the controls available. No invented products ship in the final tree.
+- Accessibility and responsive checks: every control has a visible associated label; the search input is keyboard reachable with a 2px obsidian focus ring; controls use 16px input text; no horizontal overflow at 1280px or 390px; mobile controls stay inside the viewport, stack vertically, and measure at least 44px high.
+- Regression smoke checks passed: `/`, `/collections`, `/collections/rings`, `/search`, and `/search?q=test` returned HTTP 200; unknown product and collection URLs still returned HTTP 404.
+- `npm run lint`, `npm run typecheck`, `npm run check:contrast`, and `npm run build` all passed. Screenshots: `t011-search-desktop.png`, `t011-search-mobile.png`, `t011-search-zero.png`, `t011-search-empty.png`, `t011-search-empty-mobile.png`.
+
+**Known scope boundary:** New-arrival and featured sorting from `spec.md` §14 are not implemented because the current `Product` model has no structured new-arrival or featured flags. Colour and size filters are likewise withheld until approved structured option data exists. Search, filtering, and sorting operate on the current in-memory `lib/catalogue.ts` source and will cover database-backed records once T014 replaces that data access. Pagination is not implemented; it belongs to a later listing task if the catalogue grows. Live product-data verification remains dependent on T013A/T014. T012 and later tasks were not started.
 
 ### T012 — Implement product image handling
 **Status:** NOT_STARTED
@@ -831,9 +843,9 @@ Supplier-specific work is now covered by T013A, T018A, T025A, T025B, T026A, T026
 
 ## Current Execution Rule
 
-T008, T009, and T010 are complete and verified. The production catalogue is intentionally empty until approved supplier-backed product records exist.
+T008, T009, T010, and T011 are complete and verified. The production catalogue is intentionally empty until approved supplier-backed product records exist.
 
-The next task is **T011 — Implement search, filtering, and sorting**, which requires owner approval before it starts. Do not start T011 or any later feature task without that approval. T009/T010 live product-data verification remains dependent on T013A/T014.
+The next task is **T012 — Implement product image handling**, which requires owner approval before it starts. Do not start T012 or any later feature task without that approval. T009/T010/T011 live product-data verification remains dependent on T013A/T014. T012 also depends on the owner decision for image storage, which is still PENDING.
 
 Supplier-related sequence after their prerequisites: **T013A → T018A → T025A → T025B → T026A → T026B → T027A → T038A**. Do not skip the supplier data model or availability verification.
 

@@ -34,7 +34,7 @@ export function CatalogueEmptyState({
         Catalogue
       </p>
       <h2 className="mt-2 font-serif text-2xl text-obsidian">{title}</h2>
-      <p className="mx-auto mt-3 max-w-lg text-sm text-charcoal">
+      <p className="mx-auto mt-3 max-w-lg break-words text-sm text-charcoal">
         {description}
       </p>
       {actionHref && actionLabel && (
