@@ -1,6 +1,6 @@
 # J's Jewellery
 
-Next.js baseline and approved design system for the J's Jewellery storefront. This repository currently contains the verified T003A baseline and the T004 design tokens: Next.js App Router, strict TypeScript, Tailwind CSS, ESLint, and placeholder configuration. No store features, database, payments, admin, or owner/supplier data are implemented yet.
+Next.js baseline, approved design system, and shared site layout for the J's Jewellery storefront. This repository currently contains the verified T003A baseline, T004 design tokens, and T005 header/navigation/footer: Next.js App Router, strict TypeScript, Tailwind CSS, ESLint, and placeholder configuration. No store features, database, payments, admin, or owner/supplier data are implemented yet.
 
 See `AGENTS.md`, `spec.md`, `plan.md`, and `tasks.md` for the approved requirements and task status. See `DESIGN_SYSTEM.md` for colour, typography, spacing, and focus conventions.
 
@@ -47,6 +47,8 @@ All four checks must pass before feature work begins.
 
 ```text
 app/                App Router layout, placeholder page, and design tokens
+components/layout/  Shared header, logo, and footer components
+lib/                Shared navigation data
 public/             Static assets
 scripts/            Repeatable verification scripts
 DESIGN_SYSTEM.md    Approved colour, typography, spacing, and focus rules

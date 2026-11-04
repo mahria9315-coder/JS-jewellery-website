@@ -1,7 +1,7 @@
 
 # J's Jewellery — Task Tracker
 
-**Status:** T004 design system complete — 4 November 2026. T003A baseline and T004 design tokens are verified; feature work has not started.  
+**Status:** T005 shared layout complete — 4 November 2026. T003A baseline, T004 design tokens, and T005 header/navigation/footer are verified; store features have not started.  
 **Rule:** Do not mark a task DONE until its acceptance criteria have been verified.
 
 ## Status Definitions
@@ -121,14 +121,34 @@
 - No products, suppliers, prices, stock, reviews, database, payments, secrets, or deployment were added.
 
 ### T005 — Implement shared site layout
-**Status:** NOT_STARTED
+**Status:** DONE  
+**Completed:** 4 November 2026. Shared header, responsive navigation, footer, and skip link implemented and verified. No store features were added.
 
-- [ ] Implement or refine header.
-- [ ] Implement navigation.
-- [ ] Implement footer.
-- [ ] Check mobile menu and keyboard operation.
+- [x] Implement or refine header.
+- [x] Implement navigation.
+- [x] Implement footer.
+- [x] Check mobile menu and keyboard operation.
 
 **Acceptance criteria:** Shared navigation works on mobile and desktop.
+
+**Verification evidence (4 November 2026):**
+- `components/layout/SiteHeader.tsx` provides a responsive header with desktop navigation and a mobile disclosure menu.
+- `components/layout/SiteFooter.tsx` provides footer navigation, the eight approved collections, policy links, and an honest contact placeholder. No policy wording, contact number, or WhatsApp number was invented.
+- `components/layout/SiteLogo.tsx` provides the shared "J's Jewellery" wordmark for light and dark surfaces.
+- `lib/site-navigation.ts` centralises primary, shop, collection, and policy links.
+- `app/layout.tsx` now renders a skip link, header, semantic `<main id="main-content">`, and footer. `app/page.tsx` keeps the existing placeholder content inside the shared layout.
+- The mobile toggle exposes `aria-expanded` and `aria-controls`; opening the menu, tabbing into links, and pressing Escape were verified.
+- Escape closes the mobile menu and returns focus to the toggle button. Activating a link also closes the menu.
+- Semantic landmarks verified: exactly one `<header>`, one `<main>`, and one `<footer>`; navigation elements are labelled.
+- Browser verification at 390px: desktop navigation hidden, menu button visible, 13 mobile links available, panel closed by default.
+- Keyboard verification: the skip link is the first tab stop, is visible when focused, targets `#main-content`, and shows a 2px obsidian ring. Opening the menu with Enter, tabbing to the first link, and closing with Escape all passed.
+- Browser verification at 1280px: desktop navigation visible with five links, menu button hidden, and Home exposed as `aria-current="page"`.
+- Footer uses the obsidian surface with champagne links (`14.67:1`); keyboard focus on a footer link produced a 2px champagne outline.
+- No horizontal overflow at 360px, 390px, 768px, 1280px, or 1440px, including the open mobile menu.
+- `npm run lint` → exit 0. `npm run typecheck` → exit 0. `npm run check:contrast` → exit 0. `npm run build` → exit 0.
+- No products, prices, suppliers, reviews, database, payments, secrets, or deployment were added.
+
+**Known scope boundary:** Collection, search, cart, and policy destinations are linked but not implemented; they belong to T008, T011, T017, and T029. The production build initially failed because a dynamic copyright year used `new Date()` during prerender under Cache Components; it was replaced with a static copyright line rather than forcing dynamic rendering.
 
 ### T006 — Implement homepage
 **Status:** NOT_STARTED
@@ -742,9 +762,9 @@ Supplier-specific work is now covered by T013A, T018A, T025A, T025B, T026A, T026
 
 ## Current Execution Rule
 
-T004 is complete and verified. The next task is **T005 — Implement shared site layout**, which requires owner approval before it starts.
+T005 is complete and verified. The next task is **T006 — Implement homepage**, which requires owner approval before it starts.
 
-Do not start T005 or any feature task until the owner approves the verified design system.
+Do not start T006 or any feature task until the owner approves the verified shared layout.
 
 Supplier-related sequence after their prerequisites: **T013A → T018A → T025A → T025B → T026A → T026B → T027A → T038A**. Do not skip the supplier data model or availability verification.
 
