@@ -1,11 +1,13 @@
+import { collections } from "./collections";
+
 export type NavItem = {
   label: string;
   href: string;
 };
 
 /**
- * Primary navigation. Destination routes for catalogue, search, and cart are
- * implemented in later approved tasks (T008, T011, T017).
+ * Primary navigation. Destination routes for search and cart are implemented
+ * in later approved tasks (T011, T017).
  */
 export const primaryLinks: NavItem[] = [
   { label: "Home", href: "/" },
@@ -22,19 +24,10 @@ export const shopLinks: NavItem[] = [
   { label: "Cart", href: "/cart" },
 ];
 
-export const collectionLinks: NavItem[] = [
-  { label: "Women's Jewellery", href: "/collections/womens-jewellery" },
-  { label: "Men's Jewellery", href: "/collections/mens-jewellery" },
-  { label: "Bracelets", href: "/collections/bracelets" },
-  { label: "Necklaces", href: "/collections/necklaces" },
-  { label: "Rings", href: "/collections/rings" },
-  { label: "Earrings", href: "/collections/earrings" },
-  { label: "Pearl Jewellery", href: "/collections/pearl-jewellery" },
-  {
-    label: "Customized Name Jewellery",
-    href: "/collections/customized-name-jewellery",
-  },
-];
+export const collectionLinks: NavItem[] = collections.map((collection) => ({
+  label: collection.name,
+  href: `/collections/${collection.slug}`,
+}));
 
 /**
  * Policy routes are created in T029. Labels only: no policy wording is

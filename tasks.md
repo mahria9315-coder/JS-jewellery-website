@@ -1,7 +1,7 @@
 
 # J's Jewellery — Task Tracker
 
-**Status:** T007 responsive verification complete — 4 November 2026. T003A baseline, T004 design tokens, T005 header/navigation/footer, T006 homepage sections, and T007 responsive layouts are verified; product data and store features have not started.  
+**Status:** T010 product details verified — 4 November 2026. T003A baseline, T004 design tokens, T005 header/navigation/footer, T006 homepage sections, T007 responsive layouts, T008 collections, T009 product listing, and T010 product details are verified. The production catalogue remains intentionally empty until approved supplier-backed product records exist; cart, search, and later store features have not started.  
 **Rule:** Do not mark a task DONE until its acceptance criteria have been verified.
 
 ## Status Definitions
@@ -219,41 +219,68 @@
 ## Phase 3 — Catalogue
 
 ### T008 — Implement the eight collections
-**Status:** NOT_STARTED
+**Status:** DONE
+**Completed:** 4 November 2026.
 
-- [ ] Women's Jewellery.
-- [ ] Men's Jewellery.
-- [ ] Bracelets.
-- [ ] Necklaces.
-- [ ] Rings.
-- [ ] Earrings.
-- [ ] Pearl Jewellery.
-- [ ] Customized Name Jewellery.
+- [x] Women's Jewellery.
+- [x] Men's Jewellery.
+- [x] Bracelets.
+- [x] Necklaces.
+- [x] Rings.
+- [x] Earrings.
+- [x] Pearl Jewellery.
+- [x] Customized Name Jewellery.
 
 **Acceptance criteria:** Every collection is accessible and handles an empty catalogue correctly.
 
-### T009 — Implement product listing
-**Status:** NOT_STARTED
+**Verification evidence (4 November 2026):**
+- `lib/collections.ts` is the source of truth for the eight approved collections; `collectionLinks` in `lib/site-navigation.ts` now derives from it.
+- `/collections` lists all eight collections with the correct `/collections/<slug>` hrefs, one `h1`, a breadcrumb, and no horizontal overflow at 360, 768, 1024, and 1440px.
+- All eight `/collections/<slug>` routes return HTTP 200, render the expected collection name as the only `h1`, show the honest “No products in this collection yet” state, expose seven “Other collections” links, and have no horizontal overflow.
+- Unknown collection URLs return HTTP 404 with the branded not-found page. `proxy.ts` resolves this before rendering because Cache Components can otherwise emit a soft 404 after streaming starts.
+- The final committed catalogue is intentionally empty; no invented products or collection content was added. Rendering with product data was verified separately for T009 and T010 using temporary fixtures that were removed before commit.
+- `npm run lint`, `npm run typecheck`, `npm run check:contrast`, and `npm run build` all passed. Screenshots: `t008-collections-index.png`, `t008-collection-empty.png`, `t008-collections-mobile.png`.
 
-- [ ] Create reusable product cards.
-- [ ] Display available product images.
-- [ ] Display accurate names and prices.
-- [ ] Display availability.
-- [ ] Add useful empty states.
+### T009 — Implement product listing
+**Status:** DONE
+**Completed:** 4 November 2026.
+
+- [x] Create reusable product cards.
+- [x] Display available product images.
+- [x] Display accurate names and prices.
+- [x] Display availability.
+- [x] Add useful empty states.
 
 **Acceptance criteria:** Product cards render configured product data correctly.
 
-### T010 — Implement product details
-**Status:** NOT_STARTED
+**Verification evidence (4 November 2026):**
+- Added reusable `ProductCard`, `ProductGrid`, `AvailabilityBadge`, and `ProductImageFrame` components, with product types, PKR formatting, and discount validation in `lib/catalogue.ts`.
+- Verified with clearly labelled temporary fixtures that were removed before commit: a card rendered the product name, local image, `PKR 1,234`, valid original `PKR 1,500`, and “In stock”; an invalid original price (`PKR 500` below the current price) was suppressed; a missing image showed the neutral “Image pending” placeholder.
+- `next/image` loaded the local test image successfully, and the grid rendered 1 column on mobile, 2 at 768px, and 3 at 1024px and above with no horizontal overflow.
+- A collection with no products rendered “No products in this collection yet” with a link back to all collections.
+- No invented products ship in the final tree. Production listing data remains dependent on approved supplier-backed records in T013A/T014; live-data verification belongs to T014.
+- `npm run lint`, `npm run typecheck`, `npm run check:contrast`, and `npm run build` all passed. Screenshot: `t009-collection-card.png`.
 
-- [ ] Display product name and description.
-- [ ] Display product images.
-- [ ] Display current price.
-- [ ] Display original price only for valid discounts.
-- [ ] Display supplier-backed availability.
-- [ ] Handle unknown product URLs.
+### T010 — Implement product details
+**Status:** DONE
+**Completed:** 4 November 2026.
+
+- [x] Display product name and description.
+- [x] Display product images.
+- [x] Display current price.
+- [x] Display original price only for valid discounts.
+- [x] Display supplier-backed availability.
+- [x] Handle unknown product URLs.
 
 **Acceptance criteria:** Detail pages show correct information and handle unavailable products safely.
+
+**Verification evidence (4 November 2026):**
+- Added the `/products/[slug]` route and shared product-detail rendering with breadcrumbs, collection links, one `h1`, image gallery, current price, conditional original price, description, and availability.
+- Verified with temporary fixtures that were removed before commit: the available fixture showed the name, description, `PKR 1,234`, valid original `PKR 1,500`, “In stock”, and the supplier-verification date. The unavailable fixture showed “Currently unavailable”, stated that the item “cannot be ordered”, suppressed its invalid original price, and displayed no purchase controls.
+- No supplier identity, cost, SKU, or margin was rendered. Desktop and mobile layouts had no horizontal overflow and exactly one `h1`.
+- Unknown product URLs return HTTP 404 with the branded not-found page. Under Cache Components, `notFound()` can run after streaming and produce a soft 404, so `proxy.ts` checks the slug before rendering and rewrites to `/not-found` with a 404 status and `X-Robots-Tag: noindex`. Verified `/products/not-a-product` and `/not-found` return 404.
+- The final committed catalogue is intentionally empty. Live supplier-backed product data and availability remain dependent on T013A/T014.
+- `npm run lint`, `npm run typecheck`, `npm run check:contrast`, and `npm run build` all passed. Screenshots: `t010-product-detail.png`, `t010-product-unavailable.png`, `t010-product-mobile.png`.
 
 ### T011 — Implement search, filtering, and sorting
 **Status:** NOT_STARTED
@@ -804,9 +831,9 @@ Supplier-specific work is now covered by T013A, T018A, T025A, T025B, T026A, T026
 
 ## Current Execution Rule
 
-T007 is complete and verified. The next task is **T008 — Implement the eight collections**, which requires owner approval before it starts.
+T008, T009, and T010 are complete and verified. The production catalogue is intentionally empty until approved supplier-backed product records exist.
 
-Do not start T008 or any feature task until the owner approves the verified responsive layouts.
+The next task is **T011 — Implement search, filtering, and sorting**, which requires owner approval before it starts. Do not start T011 or any later feature task without that approval. T009/T010 live product-data verification remains dependent on T013A/T014.
 
 Supplier-related sequence after their prerequisites: **T013A → T018A → T025A → T025B → T026A → T026B → T027A → T038A**. Do not skip the supplier data model or availability verification.
 
