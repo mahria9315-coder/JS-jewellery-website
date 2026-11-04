@@ -8,12 +8,29 @@ import { collectionLinks, primaryLinks } from "@/lib/site-navigation";
 
 import { SiteLogo } from "./SiteLogo";
 
-function isCurrentPath(pathname: string, href: string) {
-  return href === "/" ? pathname === "/" : pathname.startsWith(href);
+/**
+ * Return the most specific navigation link for the current path. A parent link
+ * such as /collections must not also be marked as the current page when a more
+ * specific child link matches.
+ */
+function getCurrentHref(pathname: string, links: readonly { href: string }[]) {
+  return links.reduce<string | undefined>((best, link) => {
+    const matches =
+      link.href === "/"
+        ? pathname === "/"
+        : pathname === link.href || pathname.startsWith(`${link.href}/`);
+
+    if (!matches) {
+      return best;
+    }
+
+    return !best || link.href.length > best.length ? link.href : best;
+  }, undefined);
 }
 
 export function SiteHeader() {
   const pathname = usePathname();
+  const currentHref = getCurrentHref(pathname, primaryLinks);
   const [open, setOpen] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
 
@@ -41,7 +58,7 @@ export function SiteHeader() {
         <nav aria-label="Primary" className="hidden md:block">
           <ul className="flex items-center gap-6">
             {primaryLinks.map((link) => {
-              const current = isCurrentPath(pathname, link.href);
+              const current = currentHref === link.href;
 
               return (
                 <li key={link.href}>
@@ -95,7 +112,7 @@ export function SiteHeader() {
         <nav aria-label="Mobile primary" className="container-page py-4">
           <ul className="flex flex-col">
             {primaryLinks.map((link) => {
-              const current = isCurrentPath(pathname, link.href);
+              const current = currentHref === link.href;
 
               return (
                 <li key={link.href}>

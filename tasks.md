@@ -1,7 +1,8 @@
 
 # J's Jewellery — Task Tracker
 
-**Status:** T035 marketing integration documentation, T036 payment-provider evaluation, and T037 static checks verified — 4 November 2026. T003A baseline, T004 design tokens, T005 header/navigation/footer, T006 homepage sections, T007 responsive layouts, T008 collections, T009 product listing, T010 product details, and T011 search/filtering/sorting are verified. The production catalogue remains intentionally empty until approved supplier-backed product records exist; cart, checkout, payments, admin, and live integrations have not started.  
+**Status:** T001 repository audit, T040 responsive/accessibility verification, and T041 performance verification are complete — 4 November 2026. T003A baseline, T004 design tokens, T005 header/navigation/footer, T006 homepage sections, T007 responsive layouts, T008 collections, T009 product listing, T010 product details, T011 search/filtering/sorting, and T035–T037 integration documentation/static checks are verified. The production catalogue remains intentionally empty until approved supplier-backed product records exist; cart, checkout, payments, admin, and live integrations have not started.  
+**Tracker:** 17 DONE, 0 BLOCKED, 36 NOT_STARTED.  
 **Rule:** Do not mark a task DONE until its acceptance criteria have been verified.
 
 ## Status Definitions
@@ -17,17 +18,18 @@
 ## Phase 1 — Repository Audit and SDD
 
 ### T001 — Inspect the existing repository
-**Status:** BLOCKED  
-**Blocked by:** T003A initialized the Git repository, but the T001 audit has not been performed. Framework, dependency, route, component, style, test, and feature inspection must still be completed and verified. Creating the project does not satisfy T001.
+**Status:** DONE
 
-- [ ] Inspect the project folder and current Git status.
-- [ ] Identify framework, package manager, dependencies, and scripts.
-- [ ] Review existing routes, components, styles, and tests.
-- [ ] Identify existing working features and missing requirements.
+- [x] Inspect the project folder and current Git status.
+- [x] Identify framework, package manager, dependencies, and scripts.
+- [x] Review existing routes, components, styles, and tests.
+- [x] Identify existing working features and missing requirements.
 
 **Acceptance criteria:** A repository audit is recorded without unnecessary code changes.
 
-**T003 note:** T003A created the Git repository and baseline files, but T001's own audit steps remain unchecked. This task stays BLOCKED until those steps are performed and verified; it must not be marked DONE merely because the project now exists.
+**Verification (4 November 2026):** Audit recorded in `REPOSITORY_AUDIT.md`. Verified branch `main`, 8 commits, HEAD `2828901`, clean tree before the batch, no tags or remotes, 48 tracked files, and no secrets in tracked files. Confirmed Next.js 16.4.5 App Router with Cache Components, React 19.3.0, strict TypeScript, Tailwind CSS 4, ESLint 9, and npm 11.19.0 on Node 24.21.0. Reviewed every route, component, data module, style token, and script; no test framework or test files exist. Recorded implemented features, missing dependencies, documentation drift, and nine risks. T001 required inspection only; the five code files changed in this batch belong to T040/T041, and the only T001 changes are the audit record and a README link. `npm run lint`, `npm run typecheck`, `npm run check:contrast`, and `npm run build` passed before and after the batch.
+
+**T003 note (historical):** T003A created the repository and baseline files but did not satisfy T001. The audit above was performed as its own task after the feature work it needed to inspect existed.
 
 ### T002 — Verify the four SDD documents
 **Status:** DONE
@@ -790,26 +792,30 @@
 **Acceptance criteria:** Relevant access and validation checks pass and identified risks are documented, including any supplier-data exposure risk.
 
 ### T040 — Test responsive design and accessibility
-**Status:** NOT_STARTED
+**Status:** DONE
 
-- [ ] Check mobile layouts.
-- [ ] Check tablet layouts.
-- [ ] Check desktop layouts.
-- [ ] Test keyboard navigation.
-- [ ] Check labels and contrast.
-- [ ] Check image alternative text.
+- [x] Check mobile layouts.
+- [x] Check tablet layouts.
+- [x] Check desktop layouts.
+- [x] Test keyboard navigation.
+- [x] Check labels and contrast.
+- [x] Check image alternative text.
 
 **Acceptance criteria:** Core pages are usable across tested sizes and basic accessibility checks are satisfied.
 
-### T041 — Review performance
-**Status:** NOT_STARTED
+**Verification (4 November 2026):** Evidence recorded in `QUALITY_VERIFICATION.md` §2-§5. Tested 11 widths from 320 to 1440 px on `/`, `/collections`, `/collections/customized-name-jewellery`, and `/search`, plus axe-core at five viewports on those routes, filtered search, and the branded 404. Zero horizontal overflow and zero header overlap; navigation switches at 768 px; the mobile menu opens, closes with Escape, and restores focus. One `h1` per page, one header/main/footer, named landmarks, labelled fields, no duplicate IDs, and no unlabelled images. After fixes: 0 axe violations on all 30 page/viewport combinations, every keyboard stop shows a visible 2 px focus ring, and all visible controls are at least 24x24 px. Three verified defects were fixed: the logo accessible-name mismatch (`SiteLogo.tsx`), the skip link not moving focus (`app/layout.tsx`), and duplicate `aria-current` links (`SiteHeader.tsx`). Limitations: no real images or screen-reader testing; Chrome only; no formal WCAG conformance claim.
 
-- [ ] Check image sizes and loading.
-- [ ] Review avoidable client-side JavaScript.
-- [ ] Measure page performance.
-- [ ] Record the test environment and results.
+### T041 — Review performance
+**Status:** DONE
+
+- [x] Check image sizes and loading.
+- [x] Review avoidable client-side JavaScript.
+- [x] Measure page performance.
+- [x] Record the test environment and results.
 
 **Acceptance criteria:** Measured results and known performance limitations are documented.
+
+**Verification (4 November 2026):** Evidence recorded in `QUALITY_VERIFICATION.md` §6-§11. Three cold runs per page and profile on the production build: mobile median LCP 504-600 ms with 4x CPU and slow-4G throttling, desktop median LCP 120-156 ms, CLS 0 everywhere, TBT approximately 0 ms, and 162-172 KB total transfer including 142 KB of shared compressed JavaScript. No third-party scripts and no images exist yet. One verified defect was fixed: `/search` produced 0.1706 CLS from a Suspense fallback swap. The route now blocks (`instant = false`), awaits `searchParams`, and renders final content directly; it is dynamic (`ƒ`) and measured CLS 0 in all runs. Limitations: localhost and synthetic throttling, Chrome only, no real images or field data, and no INP because no interactive customer flow exists.
 
 ---
 
@@ -872,14 +878,14 @@ Supplier-specific work is now covered by T013A, T018A, T025A, T025B, T026A, T026
 
 ## Current Execution Rule
 
-T008–T011 and T035–T037 are complete and verified. The production catalogue is intentionally empty until approved supplier-backed product records exist. No marketing or payment integration is live.
+T001, T008–T011, T035–T037, T040, and T041 are complete and verified. The production catalogue is intentionally empty until approved supplier-backed product records exist. No marketing or payment integration is live.
 
 T012–T034 remain blocked or dependent: T012 needs the PENDING image-storage decision; T013 needs a PostgreSQL provider and connection; T013A needs T013 plus approved supplier data; T014 needs T013/T013A; T015/T016 need approved customization options and supplier confirmation; T017–T031 depend on cart, checkout, orders, admin, policies, or other owner decisions; T032/T033 need the approved domain; T034 needs real product data. Do not invent the missing decisions or data.
 
-T038 and T039 cannot start until cart, checkout, orders, and admin exist. The next safe owner-approved batch is **T040 (responsive design and accessibility) and T041 (performance)**, which can be tested against the current public pages. T042–T044 remain blocked on hosting, domain, database, and explicit production approval.
+T038 and T039 cannot start until cart, checkout, orders, and admin exist. T042–T044 remain blocked on hosting, domain, database, and explicit production approval. T040 and T041 were the last safe tasks that could run against the current public pages; no further task is eligible without owner decisions. Do not start T042.
 
 Supplier-related sequence after their prerequisites: **T013A → T018A → T025A → T025B → T026A → T026B → T027A → T038A**. Do not skip the supplier data model or availability verification.
 
-T001 remains **BLOCKED**. The repository now exists, but the T001 audit has not been performed. Re-verify T001 as its own task rather than assuming it passed.
+The T001 audit is recorded in `REPOSITORY_AUDIT.md`. The T040/T041 evidence, fixes, test environment, and limitations are recorded in `QUALITY_VERIFICATION.md`.
 
 Do not change any task to DONE until its acceptance criteria have been verified.

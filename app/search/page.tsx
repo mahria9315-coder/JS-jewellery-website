@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 
 import { Breadcrumbs } from "@/components/catalogue/Breadcrumbs";
 import { SearchExperience } from "@/components/catalogue/SearchExperience";
@@ -11,22 +10,21 @@ export const metadata: Metadata = {
     "Search J's Jewellery by product name, filter by collection or availability, and sort by price.",
 };
 
+/**
+ * Search results depend on request-specific searchParams, so they cannot be
+ * part of a shared static shell. Blocking this route keeps the final layout in
+ * the first response instead of swapping a fallback for the results, which
+ * previously moved the footer and produced 0.17 CLS.
+ */
+export const instant = false;
+
 type SearchPageProps = {
   searchParams: Promise<RawCatalogueSearchParams>;
 };
 
-function SearchFallback() {
-  return (
-    <div
-      className="mt-8 rounded-brand border border-charcoal/15 bg-white p-6"
-      role="status"
-    >
-      <p className="text-sm text-charcoal">Loading search…</p>
-    </div>
-  );
-}
+export default async function SearchPage({ searchParams }: SearchPageProps) {
+  const params = await searchParams;
 
-export default function SearchPage({ searchParams }: SearchPageProps) {
   return (
     <section className="bg-white" aria-labelledby="search-heading">
       <div className="container-page py-section md:py-section-lg">
@@ -47,9 +45,7 @@ export default function SearchPage({ searchParams }: SearchPageProps) {
           </p>
         </div>
 
-        <Suspense fallback={<SearchFallback />}>
-          <SearchExperience searchParams={searchParams} />
-        </Suspense>
+        <SearchExperience searchParams={params} />
       </div>
     </section>
   );

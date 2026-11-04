@@ -11,18 +11,15 @@ import { ProductGrid } from "./ProductGrid";
 import { SearchControls } from "./SearchControls";
 
 type SearchExperienceProps = {
-  searchParams: Promise<RawCatalogueSearchParams>;
+  searchParams: RawCatalogueSearchParams;
 };
 
 function productCountLabel(count: number) {
   return `${count} ${count === 1 ? "product" : "products"}`;
 }
 
-export async function SearchExperience({
-  searchParams,
-}: SearchExperienceProps) {
-  const params = await searchParams;
-  const query = parseCatalogueQuery(params);
+export function SearchExperience({ searchParams }: SearchExperienceProps) {
+  const query = parseCatalogueQuery(searchParams);
   const allProducts = getAllProducts();
   const hasActiveQuery = hasActiveCatalogueQuery(query);
 

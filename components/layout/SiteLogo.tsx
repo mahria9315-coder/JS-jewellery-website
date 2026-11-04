@@ -18,15 +18,13 @@ export function SiteLogo({ tone = "light", onNavigate }: SiteLogoProps) {
       }`}
     >
       <span
-        aria-hidden="true"
         className={`font-serif text-2xl leading-none ${
           isDark ? "text-white" : "text-obsidian"
         }`}
       >
         J&apos;s
-      </span>
+      </span>{" "}
       <span
-        aria-hidden="true"
         className={`text-[0.6rem] font-medium uppercase tracking-[0.3em] ${
           isDark ? "text-champagne" : "text-charcoal"
         }`}
