@@ -1,7 +1,7 @@
 
 # J's Jewellery — Task Tracker
 
-**Status:** T003A baseline complete — 4 November 2026. Bootstrap verified; feature work has not started.  
+**Status:** T004 design system complete — 4 November 2026. T003A baseline and T004 design tokens are verified; feature work has not started.  
 **Rule:** Do not mark a task DONE until its acceptance criteria have been verified.
 
 ## Status Definitions
@@ -96,14 +96,29 @@
 ## Phase 2 — Foundation and Design
 
 ### T004 — Establish the approved design system
-**Status:** NOT_STARTED
+**Status:** DONE  
+**Completed:** 4 November 2026. Approved colour, typography, spacing, and focus conventions implemented and verified. No store features were added.
 
-- [ ] Apply approved brand colours.
-- [ ] Establish typography and spacing.
-- [ ] Define reusable visual conventions.
-- [ ] Check text contrast and keyboard focus.
+- [x] Apply approved brand colours.
+- [x] Establish typography and spacing.
+- [x] Define reusable visual conventions.
+- [x] Check text contrast and keyboard focus.
 
 **Acceptance criteria:** Shared styling follows `spec.md` and remains readable.
+
+**Verification evidence (4 November 2026):**
+- `app/globals.css` defines only the approved palette as Tailwind theme tokens: Obsidian `#090909`, Charcoal `#191919`, Gold `#C6A15B`, Champagne `#E8DCC5`, White `#FFFFFF`.
+- Typography uses a serif heading stack and a sans-serif body stack. No external webfont is downloaded.
+- Spacing and layout tokens: fluid gutter, `4rem`/`6rem` section rhythm, `80rem` page container, and a restrained `0.125rem` radius.
+- Reusable conventions defined: `container-page`, `surface-dark`, and `surface-muted`.
+- Global `:focus-visible` style is a 2px obsidian outline with a 2px offset; dark surfaces use champagne for a visible ring.
+- `DESIGN_SYSTEM.md` documents tokens, approved usage, contrast restrictions, examples, and verification.
+- `scripts/check-contrast.mjs` and `npm run check:contrast` verify the documented WCAG pairs; all 12 checks passed.
+- Gold on white is explicitly restricted at `2.43:1` and must not be used for normal text, icons, or light-surface focus rings.
+- Browser verification via Chrome DevTools Protocol at a 390px viewport: body renders the sans stack in obsidian on white; the heading renders the serif stack at `36px`/weight `400`; supporting copy renders charcoal; pressing Tab produced `:focus-visible` on a button with a solid `2px` obsidian outline at `2px` offset.
+- `npm run lint` → exit 0. `npm run typecheck` → exit 0. `npm run build` → exit 0.
+- Built CSS contains the palette, type, spacing, surface, and focus rules.
+- No products, suppliers, prices, stock, reviews, database, payments, secrets, or deployment were added.
 
 ### T005 — Implement shared site layout
 **Status:** NOT_STARTED
@@ -727,9 +742,9 @@ Supplier-specific work is now covered by T013A, T018A, T025A, T025B, T026A, T026
 
 ## Current Execution Rule
 
-T003A is complete and verified. The next task is **T004 — Establish the approved design system**, which requires owner approval before it starts.
+T004 is complete and verified. The next task is **T005 — Implement shared site layout**, which requires owner approval before it starts.
 
-Do not start T004 or any feature task until the owner approves the verified baseline.
+Do not start T005 or any feature task until the owner approves the verified design system.
 
 Supplier-related sequence after their prerequisites: **T013A → T018A → T025A → T025B → T026A → T026B → T027A → T038A**. Do not skip the supplier data model or availability verification.
 

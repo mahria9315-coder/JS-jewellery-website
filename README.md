@@ -1,8 +1,8 @@
 # J's Jewellery
 
-Next.js baseline for the J's Jewellery storefront. This repository currently contains the verified T003A baseline only: Next.js App Router, strict TypeScript, Tailwind CSS, ESLint, and placeholder configuration. No store features, database, payments, admin, or owner/supplier data are implemented yet.
+Next.js baseline and approved design system for the J's Jewellery storefront. This repository currently contains the verified T003A baseline and the T004 design tokens: Next.js App Router, strict TypeScript, Tailwind CSS, ESLint, and placeholder configuration. No store features, database, payments, admin, or owner/supplier data are implemented yet.
 
-See `AGENTS.md`, `spec.md`, `plan.md`, and `tasks.md` for the approved requirements and task status.
+See `AGENTS.md`, `spec.md`, `plan.md`, and `tasks.md` for the approved requirements and task status. See `DESIGN_SYSTEM.md` for colour, typography, spacing, and focus conventions.
 
 ## Prerequisites
 
@@ -30,26 +30,30 @@ Open <http://localhost:3000>.
 | `npm run start` | Serve the production build |
 | `npm run lint` | Run ESLint |
 | `npm run typecheck` | Run the TypeScript compiler without emitting files |
+| `npm run check:contrast` | Verify the documented WCAG colour-contrast pairs |
 
 ## Verification
 
 ```bash
+npm run check:contrast
 npm run lint
 npm run typecheck
 npm run build
 ```
 
-The T003A baseline must pass all three before feature work begins.
+All four checks must pass before feature work begins.
 
 ## Structure
 
 ```text
-app/            App Router layout and placeholder page
-public/         Static assets
+app/                App Router layout, placeholder page, and design tokens
+public/             Static assets
+scripts/            Repeatable verification scripts
+DESIGN_SYSTEM.md    Approved colour, typography, spacing, and focus rules
 eslint.config.mjs
 next.config.ts
 tsconfig.json
-.env.example    Placeholder environment variables only
+.env.example        Placeholder environment variables only
 ```
 
 ## Scope
