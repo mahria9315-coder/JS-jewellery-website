@@ -2,28 +2,29 @@ import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <section className="bg-white" aria-labelledby="not-found-heading">
+    <section aria-labelledby="not-found-heading">
       <div className="container-page py-section md:py-section-lg">
-        <p className="text-xs font-medium uppercase tracking-[0.3em] text-charcoal">
-          Page not found
-        </p>
-        <h1 id="not-found-heading" className="mt-3 text-4xl md:text-5xl">
+        <p className="eyebrow">Page not found</p>
+        <h1
+          id="not-found-heading"
+          className="heading-page heading-ivory mt-3 text-4xl md:text-5xl"
+        >
           We couldn&apos;t find that page
         </h1>
-        <p className="mt-4 max-w-prose text-base text-charcoal">
+        <p className="body-copy mt-4 max-w-prose text-base">
           The page may have moved, or the product may no longer be available.
         </p>
 
         <div className="mt-8 flex flex-wrap gap-4">
           <Link
             href="/collections"
-            className="inline-flex min-h-11 items-center justify-center rounded-brand bg-obsidian px-6 py-3 text-sm text-white transition-colors hover:bg-charcoal"
+            className="gold-shimmer font-nav inline-flex min-h-11 items-center justify-center rounded-brand bg-gold px-6 py-3 text-sm font-semibold text-on-gold transition-colors hover:bg-gold-strong focus-visible:outline-focus"
           >
-            Browse collections
+            <span>Browse collections</span>
           </Link>
           <Link
             href="/"
-            className="inline-flex min-h-11 items-center justify-center rounded-brand border border-charcoal/30 px-6 py-3 text-sm text-obsidian transition-colors hover:border-obsidian"
+            className="font-nav inline-flex min-h-11 items-center justify-center rounded-brand border border-gold/40 px-6 py-3 text-sm font-medium text-champagne transition-colors hover:border-gold hover:text-accent focus-visible:outline-focus"
           >
             Return home
           </Link>

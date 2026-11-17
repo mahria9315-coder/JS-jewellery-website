@@ -6,14 +6,35 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "postinstall": "prisma generate",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "check:contrast": "node scripts/check-contrast.mjs"
+    "test": "node --import ./tests/support/ts-resolver.mjs --test \"tests/**/*.test.mjs\"",
+    "check:contrast": "node scripts/check-contrast.mjs",
+    "prisma:generate": "prisma generate",
+    "prisma:validate": "prisma validate",
+    "prisma:status": "prisma migrate status",
+    "prisma:deploy": "prisma migrate deploy",
+    "prisma:migrate": "prisma migrate dev",
+    "admin:bootstrap": "node scripts/bootstrap-admin.mjs",
+    "env:check": "node scripts/check-production-env.mjs",
+    "env:check:dev": "node scripts/check-production-env.mjs --environment=development",
+    "db:backup:check": "node scripts/database-backup.mjs --check",
+    "db:backup": "node scripts/database-backup.mjs --run",
+    "db:restore:check": "node scripts/database-restore.mjs --check"
   },
   "dependencies": {
+    "@prisma/adapter-pg": "7.10.1",
+    "@prisma/client": "7.10.1",
+    "@vercel/blob": "2.9.0",
     "next": "16.4.5",
+    "otpauth": "9.6.0",
+    "pg": "8.23.1",
     "react": "19.3.0",
     "react-dom": "19.3.0"
+  },
+  "overrides": {
+    "zod": "4.6.7"
   },
   "devDependencies": {
     "@tailwindcss/turbopack": "^4",
@@ -22,6 +43,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.4.5",
+    "prisma": "7.10.1",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

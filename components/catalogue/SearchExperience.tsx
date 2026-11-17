@@ -1,4 +1,4 @@
-import { getAllProducts } from "@/lib/catalogue";
+import { getPublishedProducts } from "@/lib/storefront/products";
 import {
   filterAndSortProducts,
   hasActiveCatalogueQuery,
@@ -18,9 +18,9 @@ function productCountLabel(count: number) {
   return `${count} ${count === 1 ? "product" : "products"}`;
 }
 
-export function SearchExperience({ searchParams }: SearchExperienceProps) {
+export async function SearchExperience({ searchParams }: SearchExperienceProps) {
   const query = parseCatalogueQuery(searchParams);
-  const allProducts = getAllProducts();
+  const allProducts = await getPublishedProducts();
   const hasActiveQuery = hasActiveCatalogueQuery(query);
 
   if (allProducts.length === 0) {
@@ -57,8 +57,8 @@ export function SearchExperience({ searchParams }: SearchExperienceProps) {
       <SearchControls query={query} showClear={hasActiveQuery} />
 
       <div className="mt-8 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
-        <h2 className="text-2xl">Results</h2>
-        <p role="status" className="text-sm text-charcoal">
+        <h2 className="heading-editorial heading-gold text-2xl">Results</h2>
+        <p role="status" className="text-sm text-champagne/70">
           {summary}
         </p>
       </div>

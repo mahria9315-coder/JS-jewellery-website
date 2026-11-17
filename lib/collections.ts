@@ -12,42 +12,42 @@ export const collections = [
   {
     slug: "womens-jewellery",
     name: "Women's Jewellery",
-    summary: "Browse the women's jewellery collection at J's Jewellery.",
+    summary: "Browse the women's jewellery collection at JS Jewellers.",
   },
   {
     slug: "mens-jewellery",
     name: "Men's Jewellery",
-    summary: "Browse the men's jewellery collection at J's Jewellery.",
+    summary: "Browse the men's jewellery collection at JS Jewellers.",
   },
   {
     slug: "bracelets",
     name: "Bracelets",
-    summary: "Browse bracelets in the J's Jewellery catalogue.",
+    summary: "Browse bracelets in the JS Jewellers catalogue.",
   },
   {
     slug: "necklaces",
     name: "Necklaces",
-    summary: "Browse necklaces in the J's Jewellery catalogue.",
+    summary: "Browse necklaces in the JS Jewellers catalogue.",
   },
   {
     slug: "rings",
     name: "Rings",
-    summary: "Browse rings in the J's Jewellery catalogue.",
+    summary: "Browse rings in the JS Jewellers catalogue.",
   },
   {
     slug: "earrings",
     name: "Earrings",
-    summary: "Browse earrings in the J's Jewellery catalogue.",
+    summary: "Browse earrings in the JS Jewellers catalogue.",
   },
   {
     slug: "pearl-jewellery",
     name: "Pearl Jewellery",
-    summary: "Browse pearl jewellery in the J's Jewellery catalogue.",
+    summary: "Browse pearl jewellery in the JS Jewellers catalogue.",
   },
   {
     slug: "customized-name-jewellery",
     name: "Customized Name Jewellery",
-    summary: "Browse customized name jewellery at J's Jewellery.",
+    summary: "Browse customized name jewellery at JS Jewellers.",
   },
 ] as const satisfies readonly Collection[];
 

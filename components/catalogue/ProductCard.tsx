@@ -11,30 +11,32 @@ export function ProductCard({ product }: { product: Product }) {
     : undefined;
 
   return (
-    <article className="group h-full">
+    <article className="card-3d group h-full">
       <Link
         href={`/products/${product.slug}`}
-        className="flex h-full flex-col rounded-brand focus-visible:outline-offset-4"
+        className="card-3d-link focus-visible:outline-focus"
       >
-        <ProductImageFrame
-          image={product.images[0]}
-          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-          className="transition-colors group-hover:border-gold"
-        />
-        <div className="flex flex-1 flex-col pt-4">
-          <h3 className="font-serif text-xl text-obsidian">{product.name}</h3>
+        <div className="card-3d-media">
+          <ProductImageFrame
+            image={product.images[0]}
+            sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+            flush
+          />
+        </div>
+        <div className="card-3d-body">
+          <h3 className="card-3d-title">{product.name}</h3>
           <div className="mt-2 flex flex-wrap items-baseline gap-2">
-            <p className="text-base font-medium text-obsidian">
+            <p className="font-nav text-base font-semibold text-accent">
               {formatPkr(product.price)}
             </p>
             {originalPrice && (
-              <p className="text-sm text-charcoal">
+              <p className="text-sm text-champagne/70">
                 <span className="sr-only">Original price </span>
                 <span className="line-through">{formatPkr(originalPrice)}</span>
               </p>
             )}
           </div>
-          <div className="mt-auto pt-4">
+          <div className="card-3d-divider">
             <AvailabilityBadge status={product.availability.status} />
           </div>
         </div>

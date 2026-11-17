@@ -1,0 +1,41 @@
+version: 2
+
+# T064: prepared locally. Dependabot only opens pull requests; it never merges
+# or deploys. Review the first batch before enabling auto-merge (which is not
+# configured here).
+
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "04:00"
+      timezone: Asia/Karachi
+    open-pull-requests-limit: 5
+    versioning-strategy: increase
+    groups:
+      production-dependencies:
+        dependency-type: production
+      development-dependencies:
+        dependency-type: development
+    ignore:
+      # Next.js and Prisma majors need a planned upgrade with a full test run,
+      # not an automatic pull request.
+      - dependency-name: next
+        update-types: ["version-update:semver-major"]
+      - dependency-name: prisma
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@prisma/client"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@prisma/adapter-pg"
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "04:00"
+      timezone: Asia/Karachi
+    open-pull-requests-limit: 3

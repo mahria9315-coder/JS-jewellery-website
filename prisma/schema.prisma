@@ -1,0 +1,871 @@
+// JS Jewellers — Prisma schema.
+//
+// T013 established the infrastructure-only baseline. T013A (approved scope B)
+// adds the supplier and product onboarding model, and T052 adds the cart/order
+// and manual payment-verification model. No supplier, product, stock, or image
+// records are seeded here: real data must be entered by an authorised admin.
+//
+// Rules:
+// - Supplier identity, agreements, costs, supplier SKUs, notes, and margins are
+//   internal-only and must never be selected by public data access.
+// - Money is stored as integer minor units (paisa for PKR) with an explicit
+//   currency.
+// - Publication is only allowed once every evidence flag is satisfied; the
+//   application enforces this in lib/suppliers/publication.ts.
+// - Order items store immutable snapshots of names, prices, costs, and margins.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum SupplierStatus {
+  DRAFT
+  PENDING_VERIFICATION
+  ACTIVE
+  SUSPENDED
+  INACTIVE
+  ARCHIVED
+}
+
+enum VerificationStatus {
+  UNVERIFIED
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum AgreementStatus {
+  NOT_RECEIVED
+  RECEIVED
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+}
+
+enum ImageRightsStatus {
+  UNKNOWN
+  PENDING
+  CONFIRMED
+  DENIED
+}
+
+enum ProductPublicationStatus {
+  DRAFT
+  PENDING_APPROVAL
+  PUBLISHED
+  UNPUBLISHED
+}
+
+enum ProductAvailabilityStatus {
+  IN_STOCK
+  OUT_OF_STOCK
+  VERIFICATION_PENDING
+}
+
+enum PaymentMethod {
+  BANK_TRANSFER
+  EASYPAISA
+}
+
+enum PaymentStatus {
+  PENDING
+  SUBMITTED
+  VERIFIED
+  REJECTED
+  REFUNDED
+}
+
+enum OrderStatus {
+  PENDING_CONFIRMATION
+  CONFIRMED
+  FORWARDED
+  SUPPLIER_PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  RETURNED
+}
+
+// T016 production workflow. This is deliberately separate from payment status,
+// order status, and delivery status, and is never advanced by payment events.
+enum ProductionStatus {
+  PENDING
+  CONFIRMED
+  IN_PRODUCTION
+  COMPLETED
+}
+
+// Courier registry. A record only exists after an authorised administrator
+// creates it; adding a courier company is never treated as proof of approval.
+// Many couriers restrict or prohibit jewellery under their standard terms, so
+// jewellery acceptance starts NOT_ACCEPTED and can only reach ACCEPTED with
+// recorded evidence.
+enum CourierStatus {
+  NOT_CONFIGURED
+  PENDING_VERIFICATION
+  APPROVED
+  ACTIVE
+  SUSPENDED
+}
+
+enum CourierScope {
+  DOMESTIC_PK
+  INTERNATIONAL
+}
+
+enum CourierAccountVerification {
+  UNVERIFIED
+  PENDING
+  VERIFIED
+}
+
+enum JewelleryAcceptance {
+  NOT_ACCEPTED
+  PENDING_CONFIRMATION
+  ACCEPTED
+}
+
+// Courier fulfilment workflow on an order. Deliberately separate from order
+// status, payment status, and production status. It is never advanced
+// automatically: a courier "DELIVERED" event never marks the order delivered.
+enum CourierFulfilmentStatus {
+  NOT_BOOKED
+  BOOKED
+  IN_TRANSIT
+  DELIVERED
+  EXCEPTION
+  RETURNED
+  CANCELLED
+}
+
+enum ReturnReasonCategory {
+  CHANGE_OF_MIND
+  DEFECTIVE
+  DAMAGED
+  INCORRECT
+  OTHER
+}
+
+enum ReturnRequestStatus {
+  SUBMITTED
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+  REFUND_PROCESSED
+}
+
+enum AdminRoleKey {
+  SUPER_ADMIN
+  MANAGER
+  PRODUCT_MANAGER
+  ORDER_MANAGER
+  FINANCE_MANAGER
+  CONTENT_MANAGER
+}
+
+enum AdminAccountStatus {
+  ACTIVE
+  DISABLED
+}
+
+enum CustomerStatus {
+  ACTIVE
+  DISABLED
+}
+
+enum ContentStatus {
+  DRAFT
+  IN_REVIEW
+  APPROVED
+  PUBLISHED
+}
+
+model Supplier {
+  id                 String             @id @default(cuid())
+  legalName          String
+  tradingName        String?
+  contactName        String?
+  contactEmail       String?
+  contactPhone       String?
+  status             SupplierStatus     @default(PENDING_VERIFICATION)
+  verificationStatus VerificationStatus @default(UNVERIFIED)
+  verifiedAt         DateTime?
+  verifiedBy         String?
+  internalNotes      String?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  agreements         SupplierAgreement[]
+  products           Product[]
+  notes              SupplierNote[]
+  customizationConfirmations ProductCustomizationConfirmation[]
+
+  @@index([status])
+  @@index([verificationStatus])
+}
+
+model SupplierNote {
+  id         String   @id @default(cuid())
+  supplierId String
+  supplier   Supplier @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  body       String
+  author     String
+  createdAt  DateTime @default(now())
+
+  @@index([supplierId, createdAt])
+}
+
+model SupplierAgreement {
+  id                  String          @id @default(cuid())
+  supplierId          String
+  supplier            Supplier        @relation(fields: [supplierId], references: [id], onDelete: Restrict)
+  status              AgreementStatus @default(NOT_RECEIVED)
+  supplyAuthorized    Boolean         @default(false)
+  imageRightsGranted  Boolean         @default(false)
+  documentReference   String?
+  documentPath        String?
+  agreementReceivedAt DateTime?
+  reviewedAt          DateTime?
+  reviewedBy          String?
+  validFrom           DateTime?
+  validUntil          DateTime?
+  notes               String?
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+
+  @@index([supplierId])
+}
+
+model Product {
+  id                     String                    @id @default(cuid())
+  slug                   String                    @unique
+  sku                    String                    @unique
+  name                   String
+  description            String
+  category               String
+  categoryId             String?
+  categoryRef            Category?                 @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  brandId                String?
+  brand                  Brand?                    @relation(fields: [brandId], references: [id], onDelete: SetNull)
+  collectionSlugs        String[]                  @default([])
+  sellingPriceMinor      Int
+  currency               String                    @default("PKR")
+  supplierCostMinor      Int
+  supplierId             String
+  supplier               Supplier                  @relation(fields: [supplierId], references: [id], onDelete: Restrict)
+  supplierSku            String?
+  stockQuantity          Int?
+  availability           ProductAvailabilityStatus @default(VERIFICATION_PENDING)
+  availabilityVerifiedAt DateTime?
+  availabilityVerifiedBy String?
+  publicationStatus      ProductPublicationStatus  @default(DRAFT)
+  skuConfirmed           Boolean                   @default(false)
+  priceApproved          Boolean                   @default(false)
+  contentApproved        Boolean                   @default(false)
+  imageRightsStatus      ImageRightsStatus         @default(UNKNOWN)
+  imageRightsApproved    Boolean                   @default(false)
+  publishedAt            DateTime?
+  internalNotes          String?
+  featured               Boolean                   @default(false)
+  isArchived             Boolean                   @default(false)
+  lowStockThreshold      Int                       @default(5)
+  seoTitle               String?
+  seoDescription         String?
+  customizationEnabled   Boolean                   @default(false)
+  customizationConfirmation ProductCustomizationConfirmation?
+  images                 ProductImage[]
+  orderItems             OrderItem[]
+  inventoryMovements     InventoryMovement[]
+  createdAt              DateTime                  @default(now())
+  updatedAt              DateTime                  @updatedAt
+
+  @@index([publicationStatus])
+  @@index([supplierId])
+  @@index([category])
+  @@index([categoryId])
+  @@index([brandId])
+  @@index([featured])
+  @@index([isArchived])
+  @@index([customizationEnabled])
+}
+
+model ProductImage {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  src       String
+  alt       String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([productId])
+}
+
+// T015: a real supplier confirmation tied to one product. The application
+// requires confirmation.supplierId to equal product.supplierId and requires at
+// least one approved font and colour before customization can be enabled.
+model ProductCustomizationConfirmation {
+  id                String   @id @default(cuid())
+  productId         String   @unique
+  product           Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  supplierId        String
+  supplier          Supplier @relation(fields: [supplierId], references: [id], onDelete: Restrict)
+  approvedFonts     String[] @default([])
+  approvedColours   String[] @default([])
+  evidenceReference String?
+  notes             String?
+  confirmedBy       String
+  confirmedAt       DateTime @default(now())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([supplierId])
+}
+
+model Category {
+  id             String    @id @default(cuid())
+  slug           String    @unique
+  name           String
+  description    String    @default("")
+  imageSrc       String?
+  imageAlt       String?
+  sortOrder      Int       @default(0)
+  isPublished    Boolean   @default(false)
+  featured       Boolean   @default(false)
+  seoTitle       String?
+  seoDescription String?
+  products       Product[]
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([isPublished, sortOrder])
+  @@index([featured])
+}
+
+model Brand {
+  id             String    @id @default(cuid())
+  slug           String    @unique
+  name           String
+  description    String    @default("")
+  logoSrc        String?
+  logoAlt        String?
+  isPublished    Boolean   @default(false)
+  seoTitle       String?
+  seoDescription String?
+  products       Product[]
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([isPublished])
+}
+
+model InventoryMovement {
+  id            String   @id @default(cuid())
+  productId     String
+  product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  delta         Int
+  previousStock Int?
+  newStock      Int?
+  reason        String
+  note          String?
+  actor         String
+  createdAt     DateTime @default(now())
+
+  @@index([productId, createdAt])
+}
+
+model Order {
+  id                 String        @id @default(cuid())
+  orderNumber        String        @unique
+  accessToken        String        @unique
+  idempotencyKey     String        @unique
+  customerId         String?
+  customer           Customer?     @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  customerName       String
+  customerEmail      String
+  customerPhone      String
+  countryCode        String
+  city               String
+  addressLine1       String
+  addressLine2       String?
+  postalCode         String?
+  customerNotes      String?
+  internalNotes      String?
+  paymentMethod      PaymentMethod
+  paymentStatus      PaymentStatus @default(PENDING)
+  orderStatus        OrderStatus   @default(PENDING_CONFIRMATION)
+  productionStatus   ProductionStatus @default(PENDING)
+  subtotalMinor      Int
+  shippingMinor      Int           @default(0)
+  totalMinor         Int
+  currency           String        @default("PKR")
+  deliveryEstimate   String
+  policyVersion      String
+  // T026A/T026B courier snapshot. courierName/courierCode are written once at
+  // order creation from the approved courier record; the tracking reference
+  // and fulfilment status are updated manually by an administrator and are
+  // never derived from payment or order status.
+  courierCode             String?
+  courierName             String?
+  courierTrackingNumber   String?
+  courierFulfilmentStatus CourierFulfilmentStatus @default(NOT_BOOKED)
+  paymentReference   String?
+  paymentSubmittedAt DateTime?
+  paymentVerifiedAt  DateTime?
+  paymentVerifiedBy  String?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  items              OrderItem[]
+  paymentEvents      PaymentEvent[]
+  statusEvents       OrderStatusEvent[]
+  productionStatusEvents OrderProductionStatusEvent[]
+  returnRequests     ReturnRequest[]
+
+  @@index([customerEmail])
+  @@index([customerId])
+  @@index([paymentStatus])
+  @@index([orderStatus])
+  @@index([productionStatus])
+  @@index([courierCode])
+  @@index([createdAt])
+}
+
+model OrderItem {
+  id               String   @id @default(cuid())
+  orderId          String
+  order            Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId        String
+  product          Product  @relation(fields: [productId], references: [id], onDelete: Restrict)
+  supplierId       String
+  supplierName     String
+  productName      String
+  productSlug      String
+  sku              String
+  unitPriceMinor   Int
+  quantity         Int
+  lineTotalMinor   Int
+  supplierCostMinor Int
+  marginMinor      Int
+  currency         String   @default("PKR")
+  // T016 immutable customization snapshot. These columns are written once at
+  // order creation and are never updated afterwards.
+  customizationText         String?
+  customizationFont         String?
+  customizationColour       String?
+  customizationInstructions String?
+  createdAt        DateTime @default(now())
+
+  @@index([orderId])
+}
+
+model PaymentEvent {
+  id                String        @id @default(cuid())
+  orderId           String
+  order             Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  fromStatus        PaymentStatus?
+  toStatus          PaymentStatus
+  customerReference String?
+  note              String?
+  actorType         String
+  actorLabel        String
+  createdAt         DateTime      @default(now())
+
+  @@index([orderId])
+}
+
+model OrderStatusEvent {
+  id         String       @id @default(cuid())
+  orderId    String
+  order      Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  fromStatus OrderStatus?
+  toStatus   OrderStatus
+  note       String?
+  actorType  String
+  actorLabel String
+  createdAt  DateTime     @default(now())
+
+  @@index([orderId])
+}
+
+model OrderProductionStatusEvent {
+  id         String            @id @default(cuid())
+  orderId    String
+  order      Order             @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  fromStatus ProductionStatus?
+  toStatus   ProductionStatus
+  note       String?
+  actorType  String
+  actorLabel String
+  createdAt  DateTime          @default(now())
+
+  @@index([orderId, createdAt])
+}
+
+model ReturnRequest {
+  id                  String              @id @default(cuid())
+  orderId             String
+  order               Order               @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  reason              ReturnReasonCategory
+  explanation         String
+  status              ReturnRequestStatus @default(SUBMITTED)
+  protectedCase       Boolean             @default(false)
+  eligibleForDeduction Boolean            @default(false)
+  deductionPercent    Int                 @default(0)
+  deductionMinor      Int                 @default(0)
+  refundAmountMinor   Int
+  currency            String              @default("PKR")
+  adminNotes          String?
+  deductionReason     String?
+  conditionNotes      String?
+  receivedAt          DateTime?
+  receivedBy          String?
+  reviewedBy          String?
+  reviewedAt          DateTime?
+  refundProcessedAt   DateTime?
+  refundReference     String?
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+
+  @@index([orderId])
+  @@index([status])
+}
+
+model AdminAuditLog {
+  id         String   @id @default(cuid())
+  actor      String
+  action     String
+  entityType String
+  entityId   String
+  summary    String
+  metadata   Json?
+  createdAt  DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}
+
+model AdminRole {
+  id          String      @id @default(cuid())
+  key         AdminRoleKey @unique
+  name        String
+  description String
+  permissions String[]
+  users       AdminUser[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model AdminUser {
+  id               String             @id @default(cuid())
+  email            String             @unique
+  name             String
+  passwordHash     String
+  roleId           String
+  role             AdminRole          @relation(fields: [roleId], references: [id], onDelete: Restrict)
+  status           AdminAccountStatus @default(ACTIVE)
+  lastLoginAt      DateTime?
+  failedLoginCount Int                @default(0)
+  lockedUntil      DateTime?
+  notes            String?
+  sessions         AdminSession[]
+  mfaCredential    AdminMfaCredential?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  @@index([roleId])
+  @@index([status])
+}
+
+model AdminMfaCredential {
+  id              String                  @id @default(cuid())
+  userId          String                  @unique
+  user            AdminUser               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// AES-256-GCM envelope. The plaintext TOTP secret is never stored.
+  encryptedSecret String
+  /// Last accepted TOTP time-step, used to reject replayed codes.
+  lastUsedCounter Int                     @default(0)
+  confirmedAt     DateTime?
+  recoveryCodes   AdminMfaRecoveryCode[]
+  createdAt       DateTime                @default(now())
+  updatedAt       DateTime                @updatedAt
+
+  @@index([confirmedAt])
+}
+
+model AdminMfaRecoveryCode {
+  id           String             @id @default(cuid())
+  credentialId String
+  credential   AdminMfaCredential @relation(fields: [credentialId], references: [id], onDelete: Cascade)
+  /// scrypt hash of the normalised recovery code. The code is shown once.
+  codeHash     String
+  usedAt       DateTime?
+  createdAt    DateTime           @default(now())
+
+  @@index([credentialId])
+  @@index([usedAt])
+}
+
+model AdminSession {
+  id         String    @id @default(cuid())
+  tokenHash  String    @unique
+  userId     String
+  user       AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt  DateTime
+  lastSeenAt DateTime  @default(now())
+  ipHash     String?
+  userAgent  String?
+  createdAt  DateTime  @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model Customer {
+  id         String         @id @default(cuid())
+  email      String         @unique
+  name       String
+  phone      String
+  status     CustomerStatus @default(ACTIVE)
+  notes      String?
+  orders     Order[]
+  addresses  Address[]
+  noteList   CustomerNote[]
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  @@index([name])
+  @@index([status])
+}
+
+model CustomerNote {
+  id         String   @id @default(cuid())
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  body       String
+  author     String
+  createdAt  DateTime @default(now())
+
+  @@index([customerId, createdAt])
+}
+
+model Address {
+  id          String   @id @default(cuid())
+  customerId  String
+  customer    Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  label       String?
+  line1       String
+  line2       String?
+  city        String
+  countryCode String
+  postalCode  String?
+  isDefault   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@index([customerId])
+}
+
+model ShippingSetting {
+  id                     String   @id @default("default")
+  estimateMinDays        Int      @default(4)
+  estimateMaxDays        Int      @default(7)
+  deliveryNote           String   @default("Delivery timing is an estimate, not a guarantee.")
+  internationalEnabled   Boolean  @default(false)
+  updatedBy              String?
+  updatedAt              DateTime @updatedAt
+}
+
+model ShippingZone {
+  id             String   @id @default(cuid())
+  countryCode    String   @unique
+  name           String
+  isActive       Boolean  @default(false)
+  estimateMinDays Int?
+  estimateMaxDays Int?
+  chargeMinor    Int      @default(0)
+  notes          String?
+  sortOrder      Int      @default(0)
+  updatedAt      DateTime @updatedAt
+
+  @@index([isActive, sortOrder])
+}
+
+// One row per courier company the store may use. Records are created only
+// through an authorised admin action; nothing is seeded. `chargeMinor`/estimates
+// live on the destination rows so charges only ever exist as explicit,
+// owner-entered values and are never invented.
+model Courier {
+  id                        String                   @id @default(cuid())
+  code                      String                   @unique
+  displayName               String
+  // Optional owner-entered contact details (phone, email, or branch address)
+  contactDetails            String?
+  scope                     CourierScope
+  status                    CourierStatus            @default(NOT_CONFIGURED)
+  accountVerification       CourierAccountVerification @default(UNVERIFIED)
+  accountVerifiedAt         DateTime?
+  jewelleryAcceptance       JewelleryAcceptance      @default(NOT_ACCEPTED)
+  jewelleryAcceptedAt       DateTime?
+  approvedJewelleryCategories String[]               @default([])
+  // Optional tracking URL pattern containing the literal {trackingNumber}
+  // placeholder, e.g. https://www.example.com/track/{trackingNumber}
+  trackingUrlTemplate       String?
+  termsUrl                  String?
+  notes                     String?
+  updatedBy                 String?
+  createdAt                 DateTime                 @default(now())
+  updatedAt                 DateTime                 @updatedAt
+  destinations              CourierDestination[]
+
+  @@index([status])
+  @@index([scope])
+}
+
+// Per-courier destination country. `verified` means the owner recorded courier
+// confirmation for this destination; `chargeMinor` null means no approved
+// charge exists, so the destination must not be offered or charged.
+model CourierDestination {
+  id              String   @id @default(cuid())
+  courierId       String
+  courier         Courier  @relation(fields: [courierId], references: [id], onDelete: Cascade)
+  countryCode     String
+  isActive        Boolean  @default(false)
+  verified        Boolean  @default(false)
+  chargeMinor     Int?
+  estimateMinDays Int?
+  estimateMaxDays Int?
+  notes           String?
+  updatedAt       DateTime @updatedAt
+
+  @@unique([courierId, countryCode])
+  @@index([courierId, isActive])
+  @@index([countryCode])
+}
+
+model BusinessSetting {
+  key       String   @id
+  value     String
+  group     String   @default("business")
+  updatedBy String?
+  updatedAt DateTime @updatedAt
+}
+
+model PaymentSetting {
+  method             PaymentMethod @id
+  enabled            Boolean       @default(false)
+  displayLabel       String
+  publicInstructions String?
+  updatedBy          String?
+  updatedAt          DateTime      @updatedAt
+}
+
+model ContentPage {
+  id          String         @id @default(cuid())
+  slug        String         @unique
+  title       String
+  intro       String         @default("")
+  status      ContentStatus  @default(DRAFT)
+  isIndexable Boolean        @default(false)
+  publishedAt DateTime?
+  updatedBy   String?
+  sections    ContentSection[]
+  versions    PageVersion[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([status])
+}
+
+model ContentSection {
+  id         String       @id @default(cuid())
+  pageId     String
+  page       ContentPage  @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  sectionKey String
+  heading    String
+  body       String       @default("")
+  imageSrc   String?
+  imageAlt   String?
+  ctaLabel   String?
+  ctaHref    String?
+  sortOrder  Int          @default(0)
+  isVisible  Boolean      @default(true)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+
+  @@unique([pageId, sectionKey])
+  @@index([pageId, sortOrder])
+}
+
+model PageVersion {
+  id        String       @id @default(cuid())
+  pageId    String
+  page      ContentPage  @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  snapshot  Json
+  status    ContentStatus
+  note      String
+  createdBy String
+  createdAt DateTime     @default(now())
+
+  @@index([pageId, createdAt])
+}
+
+model HomeSection {
+  id              String   @id @default(cuid())
+  key             String   @unique
+  eyebrow         String   @default("")
+  heading         String
+  description     String   @default("")
+  placeholderTitle String  @default("")
+  placeholderNote String   @default("")
+  tone            String   @default("light")
+  imageSrc        String?
+  imageAlt        String?
+  ctaLabel        String?
+  ctaHref         String?
+  sortOrder       Int      @default(0)
+  isVisible       Boolean  @default(true)
+  updatedBy       String?
+  updatedAt       DateTime @updatedAt
+}
+
+model NavigationItem {
+  id        String   @id @default(cuid())
+  location  String
+  label     String
+  href      String
+  sortOrder Int      @default(0)
+  isVisible Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([location, sortOrder])
+}
+
+model MediaAsset {
+  id         String   @id @default(cuid())
+  fileName   String
+  url        String   @unique
+  alt        String
+  mimeType   String
+  sizeBytes  Int
+  uploadedBy String
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+model SeoMetadata {
+  id            String   @id @default(cuid())
+  path          String   @unique
+  title         String?
+  description   String?
+  ogImageSrc    String?
+  canonicalPath String?
+  noIndex       Boolean  @default(false)
+  sitemapInclude Boolean @default(true)
+  updatedBy     String?
+  updatedAt     DateTime @updatedAt
+}

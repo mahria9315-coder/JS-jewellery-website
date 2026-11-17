@@ -45,7 +45,7 @@ There is no remote and no CI. The repository currently exists only on the local 
 | Browser automation in repo | none; T040/T041 used external Chrome DevTools Protocol scripts |
 | `axe-core` | present as a transitive dev dependency (4.14.0), not declared by this project |
 
-Runtime dependencies are limited to `next`, `react`, and `react-dom`. There is no database client, ORM, authentication library, payment SDK, analytics package, or image-storage SDK installed.
+At the T001 audit, runtime dependencies were limited to `next`, `react`, and `react-dom`. There was no database client, ORM, authentication library, payment SDK, analytics package, or image-storage SDK installed. T013 later added `@prisma/client`, `@prisma/adapter-pg`, and `pg` for the infrastructure-only database scope.
 
 ### Scripts
 
@@ -111,7 +111,7 @@ These are not audit failures. They are tasks that intentionally have not started
 | --- | --- |
 | Product data | Catalogue is intentionally empty; approved supplier-backed records are required (T014). |
 | Images | No approved images or image-storage decision (T012). |
-| Database / Prisma | PostgreSQL provider and connection are pending (T013). |
+| Database / Prisma | Local PostgreSQL 18/Prisma 7 infrastructure is complete and verified (T013). Domain schema and application data access remain pending (T013A/T014). |
 | Customization options | Fonts, colours, eligible products, supplier confirmation pending (T015/T016). |
 | Cart and checkout | Cart persistence, server validation, availability verification, and settlement decisions pending (T017-T019). |
 | Admin and authentication | Requires cart/orders plus role and security decisions (T020-T027). |

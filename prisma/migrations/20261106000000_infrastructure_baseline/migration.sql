@@ -1,0 +1,9 @@
+-- T013 infrastructure baseline.
+--
+-- T013 is infrastructure-only. This migration intentionally contains no DDL
+-- and creates no domain tables. Supplier, supplier-product, product, order,
+-- and cost-snapshot tables belong to T013A/T014 and their approved decisions.
+--
+-- This baseline initialises the Prisma migration workflow for the
+-- js_jewellers database and records the applied migration in Prisma's
+-- internal _prisma_migrations metadata table only.

@@ -4,15 +4,13 @@ import type { Collection } from "@/lib/collections";
 
 export function CollectionCard({ collection }: { collection: Collection }) {
   return (
-    <li>
+    <li className="h-full">
       <Link
         href={`/collections/${collection.slug}`}
-        className="group flex h-full min-h-28 flex-col justify-between rounded-brand border border-charcoal/15 bg-white p-5 transition-colors hover:border-gold focus-visible:outline-offset-4"
+        className="card-3d group min-h-28 justify-between p-5 focus-visible:outline-focus"
       >
-        <span className="font-serif text-xl text-obsidian">
-          {collection.name}
-        </span>
-        <span className="mt-6 inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-charcoal transition-colors group-hover:text-obsidian">
+        <span className="card-3d-title">{collection.name}</span>
+        <span className="card-3d-cta font-nav mt-6 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-champagne/60 transition-colors">
           Explore
           <span aria-hidden="true">&rarr;</span>
         </span>

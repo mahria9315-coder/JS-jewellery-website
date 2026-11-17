@@ -1,4 +1,4 @@
-# J's Jewellery — Marketing Integration Requirements
+# JS Jewellers — Marketing Integration Requirements
 
 **Status:** T035 documentation completed 4 November 2026. No marketing integration is live.
 **Scope:** Meta Pixel, Meta advertising, Google Analytics, Instagram, and search-engine tools.
@@ -50,7 +50,7 @@ not required for the MVP to function.
    Pixel/dataset ID. The store must not create an ID on the owner's behalf.
 2. **Event scope:** agree an allowlist before any code is added. A reasonable initial scope is
    `PageView`, `ViewContent`, `AddToCart`, `InitiateCheckout`, and `Purchase`. `Purchase` must only
-   fire for a genuinely created order and must not imply payment success for Cash on Delivery.
+   fire for a genuinely created order and must not imply payment success for an unverified Bank Transfer or Easypaisa payment.
 3. **Consent:** the Pixel must not load or fire before the consent mechanism permits it. The
    consent decision and the privacy notice must be approved first.
 4. **Data minimisation:** do not send names, mobile numbers, delivery addresses, order notes,

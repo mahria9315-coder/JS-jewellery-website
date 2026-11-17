@@ -13,8 +13,8 @@ type SearchControlsProps = {
 };
 
 const fieldClass =
-  "mt-1.5 min-h-11 w-full rounded-brand border border-charcoal/30 bg-white px-3 py-2.5 text-base text-obsidian placeholder:text-charcoal/70";
-const labelClass = "text-sm font-medium text-obsidian";
+  "font-body mt-1.5 min-h-11 w-full rounded-brand border border-gold/30 bg-obsidian/60 px-3 py-2.5 text-base text-white placeholder:text-champagne/60 focus-visible:outline-focus";
+const labelClass = "font-nav text-sm font-semibold not-italic text-champagne";
 
 /**
  * Native GET form so search works without client-side JavaScript and every
@@ -28,7 +28,7 @@ export function SearchControls({ query, showClear }: SearchControlsProps) {
       method="get"
       role="search"
       aria-label="Search and filter products"
-      className="mt-8 rounded-brand border border-charcoal/15 bg-white p-4 sm:p-6"
+      className="surface-panel mt-8 rounded-card border border-gold/20 p-4 sm:p-6"
     >
       <div className="grid gap-4 lg:grid-cols-4">
         <div className="lg:col-span-4">
@@ -44,7 +44,7 @@ export function SearchControls({ query, showClear }: SearchControlsProps) {
             autoComplete="off"
             className={fieldClass}
           />
-          <p className="mt-1.5 text-xs text-charcoal">
+          <p className="mt-1.5 text-xs text-champagne/60">
             Matches product names, ignoring letter case.
           </p>
         </div>
@@ -107,14 +107,14 @@ export function SearchControls({ query, showClear }: SearchControlsProps) {
         <div className="flex flex-col gap-2 self-end sm:flex-row lg:flex-col">
           <button
             type="submit"
-            className="inline-flex min-h-11 items-center justify-center rounded-brand bg-gold px-5 py-2.5 text-sm font-medium text-obsidian transition-colors hover:bg-champagne"
+            className="gold-shimmer font-nav inline-flex min-h-11 items-center justify-center rounded-brand bg-gold px-5 py-2.5 text-sm font-semibold text-on-gold transition-colors hover:bg-gold-strong focus-visible:outline-focus"
           >
-            Apply filters
+            <span>Apply filters</span>
           </button>
           {showClear && (
             <Link
               href="/search"
-              className="inline-flex min-h-11 items-center justify-center rounded-brand border border-charcoal/30 px-5 py-2.5 text-sm text-obsidian transition-colors hover:border-obsidian"
+              className="font-nav inline-flex min-h-11 items-center justify-center rounded-brand border border-gold/30 px-5 py-2.5 text-sm font-medium text-champagne transition-colors hover:border-gold hover:text-accent focus-visible:outline-focus"
             >
               Clear filters
             </Link>

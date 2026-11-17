@@ -20,6 +20,8 @@ export type ProductImage = {
 };
 
 export type Product = {
+  /** Database identifier for supplier-backed records; absent for static data. */
+  id?: string;
   slug: string;
   name: string;
   description: string;
@@ -33,6 +35,8 @@ export type Product = {
     status: ProductAvailabilityStatus;
     lastVerifiedAt?: string;
   };
+  /** Confirmed stock quantity, shown only when the supplier provided one. */
+  stockQuantity?: number | null;
 };
 
 /**

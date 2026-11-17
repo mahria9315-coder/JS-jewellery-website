@@ -30,10 +30,13 @@ export const collectionLinks: NavItem[] = collections.map((collection) => ({
 }));
 
 /**
- * Policy routes are created in T029. Labels only: no policy wording is
- * defined yet, and none is invented here.
+ * Policy routes. T029 publishes the owner-supplied draft `/privacy` and
+ * `/returns` pages. Final approval and legal review remain PENDING OWNER
+ * APPROVAL. See `app/privacy/page.tsx` and `app/returns/page.tsx`.
  */
 export const policyLinks: NavItem[] = [
   { label: "Privacy Policy", href: "/privacy" },
+  { label: "Terms & Conditions", href: "/terms" },
   { label: "Returns & Exchanges", href: "/returns" },
+  { label: "Shipping & Delivery", href: "/shipping" },
 ];
