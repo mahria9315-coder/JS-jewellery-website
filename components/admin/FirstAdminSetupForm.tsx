@@ -12,6 +12,8 @@ import {
   labelClass,
 } from "@/components/ui/FormPrimitives";
 
+import { PasswordInput } from "./PasswordInput";
+
 const initialState: AdminSetupState = { message: undefined };
 
 export function FirstAdminSetupForm() {
@@ -25,7 +27,7 @@ export function FirstAdminSetupForm() {
       {state.message ? (
         <p
           role="alert"
-          className="rounded-card border border-red-400/40 bg-red-950/20 px-4 py-3 text-sm text-red-100"
+          className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
         >
           {state.message}
         </p>
@@ -67,16 +69,15 @@ export function FirstAdminSetupForm() {
         <label htmlFor="password" className={labelClass}>
           Password
         </label>
-        <input
+        <PasswordInput
           id="password"
           name="password"
-          type="password"
           autoComplete="new-password"
           required
           minLength={12}
-          className={inputClass}
+          describedBy="password-help"
         />
-        <p className="mt-1 text-xs text-champagne/60">
+        <p id="password-help" className="mt-1 text-xs text-slate-500">
           Use at least 12 characters, including at least one letter and one number.
         </p>
       </div>
@@ -85,14 +86,12 @@ export function FirstAdminSetupForm() {
         <label htmlFor="confirmPassword" className={labelClass}>
           Confirm password
         </label>
-        <input
+        <PasswordInput
           id="confirmPassword"
           name="confirmPassword"
-          type="password"
           autoComplete="new-password"
           required
           minLength={12}
-          className={inputClass}
         />
       </div>
 
@@ -115,7 +114,11 @@ export function FirstAdminSetupForm() {
         </p>
       </div>
 
-      <button type="submit" className={buttonPrimary} disabled={isPending}>
+      <button
+        type="submit"
+        className={`${buttonPrimary} w-full`}
+        disabled={isPending}
+      >
         {isPending ? "Creating administrator account…" : "Create first administrator"}
       </button>
     </form>

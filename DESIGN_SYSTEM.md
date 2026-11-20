@@ -351,3 +351,74 @@ The earlier 6 November 2026 background-replacement verification (at that stage) 
 The later 6 November 2026 Bright Gold Geometric Grid verification covered the homepage at `375×812`, `390×844`, `768×900`, `1366×900`, and `1440×900` in both dark and light themes. It confirmed the bright-gold layer on `/` only, `aria-hidden="true"`, `position: fixed`, clipped to the viewport, `pointer-events: none`, `z-index: 0`, and no animation. There was no horizontal or body overflow; `/collections` and `/search` retained the existing `geometric-grid`; the header, footer, hero copy, Shop Now and Search links, logo, hero artwork, and 44×44px theme toggle remained present and loaded. The light theme kept its warm ivory base with deep-gold lines, the toggle persisted `js-theme` across reload, the hero CTA navigated to `/collections`, and reduced motion left the background static. The repository TypeScript and production build checks also pass (exit 0), so T006A is DONE.
 
 The 7 November 2026 premium typography verification covered 7 routes (`/`, `/collections`, `/collections/womens-jewellery`, `/search`, `/privacy`, `/returns`, `/not-found`) at `375×812`, `390×844`, `768×900`, `1366×900`, and `1440×900` in both themes: 70 checks, no failures. Confirmed: the homepage hero is the only `h1` and the largest heading at every viewport (41.6px, 42.08px, 54.176px, 73.312px, 75.68px; weight 800, italic); its colour is `#E8DCC5` in dark and `#7A5A1E` in light; page and section headings are italic display faces while body copy, navigation, the hero CTA, and controls are upright; no horizontal document or body overflow, no clipped text, no heading offscreen, no hero/artwork overlap, no broken images after lazy-loading, and a 44×44px theme toggle on every route. The hero's larger `scrollHeight` is italic glyph ink overflow with `overflow: visible`, not clipping. `npm run lint`, `npm run typecheck`, `npm run check:contrast` (43/43), and `npm run build` all pass. Two limitations are unchanged and unrelated to typography: the framework 404 error shell (`/not-found` and unknown slugs) re-renders the root shell in the default dark theme even when `js-theme` is light, and the production catalogue remains intentionally empty, so live product cards/detail pages could not be browser-exercised. The five recorded `/not-found` theme entries are therefore known limitations, not typography failures.
+
+## 9. Administration panel — Green & White
+
+Owner-requested redesign, 17 November 2026. The private administration area now uses a modern Emerald Green and White dashboard while the public storefront keeps the approved Black Gold Galaxy theme unchanged. The Cartsy screenshot supplied by the owner was used only as a layout and interaction reference; no Cartsy branding, logo, copy, or asset was copied.
+
+### 9.1 Scope and isolation
+
+- Every admin rule is scoped to `.admin-shell`, which wraps only `/admin/**` screens. Public routes never receive admin styles.
+- `app/globals.css` remaps the existing semantic utilities (`gold`, `champagne`, `charcoal`, `obsidian`, `accent`, `focus`, and related theme variables) to the admin palette **inside** `.admin-shell`. Existing admin pages therefore inherit the new look without changing their business markup or server logic.
+- Shared primitives such as `panelClass`, `inputClass`, `buttonPrimary`, and `Notice` remain unchanged globally, so the storefront and checkout are unaffected.
+- The storefront theme toggle and Black Gold tokens are untouched; the admin panel always renders light with its own `color-scheme: light`.
+
+### 9.2 Tokens
+
+| Token | Value | Use |
+| --- | --- | --- |
+| `--admin-bg` | `#f4f7f5` | Off-white app background |
+| `--admin-surface` | `#ffffff` | Cards, sidebar, topbar |
+| `--admin-surface-muted` | `#f8fafc` | Table headings, quiet rows |
+| `--admin-text` | `#0f172a` | Headings and primary values |
+| `--admin-text-soft` | `#334155` | Body copy |
+| `--admin-text-muted` | `#64748b` | Secondary labels and hints |
+| `--admin-border` | `#e2e8e5` | Subtle borders and separators |
+| `--admin-primary` | `#059669` | Emerald accents, active indicators |
+| `--admin-primary-strong` | `#047857` | Links, actions, icon emphasis |
+| `--admin-forest` | `#064e3b` | Dark forest logo plate and active text |
+| `--admin-primary-soft` | `#ecfdf5` | Active nav background, soft success |
+| `--admin-focus` | `#065f46` | Keyboard focus ring |
+
+Cards use white surfaces, `0.875rem` radii, a one-pixel `--admin-border` and a restrained shadow. Tables use a white `admin-table-wrap` with a muted uppercase header row, subtle row separators, and a hover tint.
+
+### 9.3 Layout and navigation
+
+- `components/admin/AdminChrome.tsx` is the client shell: collapsible desktop sidebar, sticky top header, breadcrumb and page title, existing permission-aware search, existing payment/return notification links, profile menu, sign-out, and mobile navigation.
+- Sidebar collapse persists in `localStorage` under `js-admin-sidebar` through `useSyncExternalStore`, so there is no hydration-time state write or layout flash.
+- `components/admin/AdminNav.tsx` keeps the existing navigation groups, labels, destinations, permission filtering, and exact-match rules. `AdminNavIcon.tsx` supplies inline SVG icons for every existing destination, so no icon dependency was added.
+- Active state is a soft emerald background, forest text, and a 3px inset primary bar. Collapsed mode keeps icons and accessible labels; mobile mode always shows full labels.
+- `components/admin/AdminMobileNav.tsx` provides the same groups in an expandable panel beneath the header.
+- The skip link targets `#admin-content`. The sidebar and topbar are hidden in print, and the main region keeps a visible heading structure.
+
+### 9.4 Shared components and auth
+
+- `AdminPageHeader`, `AdminBreadcrumbs`, `AdminEmptyState`, `AdminTable`/`AdminTh`/`AdminTd`, and `StatusPill` use the admin palette. Existing pages that already used these components inherit the redesign.
+- Manual tables in audit, products, orders (list and detail), and suppliers (list and detail) use `admin-table-wrap` for horizontal scrolling and a consistent card frame.
+- `AdminAuthShell` gives `/admin/login`, `/admin/setup`, `/admin/mfa`, `/admin/mfa/verify`, and `/admin/mfa/codes` a shared white card on a soft green-tinted background, with the owner logo on a dark forest plate.
+- `PasswordInput` adds an accessible show/hide control to existing password fields; it changes no authentication or validation behaviour.
+- Existing form, validation, error, loading, empty, and permission logic is preserved. Only presentation classes and safe UI controls changed.
+
+### 9.5 Covered routes
+
+Dashboard, reports, products (list/new/edit/preview), categories, brands, inventory, orders (list/detail), returns, customers (list/detail), suppliers (list/detail), content (list/editor/homepage), navigation, media, SEO, business/payments/shipping/notifications settings, users (list/detail), roles, audit, account, search, login, first-run setup, MFA enrolment, MFA verification, and recovery codes.
+
+### 9.6 Accessibility and responsive behaviour
+
+- Green primary actions keep white text; the admin token remap deliberately makes ordinary `text-white` resolve to dark body text on white cards.
+- Contrast is verified for the admin palette separately from the storefront palettes: headings, body, muted text, links, primary buttons, focus rings, and all warning/danger/info/success tints pass 4.5:1 for text and 3:1 for UI/focus.
+- Tables scroll horizontally inside `admin-table-wrap` rather than forcing page-level overflow.
+- Sidebar labels truncate safely, the topbar wraps controls on narrow screens, and the profile menu uses native `<details>` behaviour.
+- `prefers-reduced-motion` removes non-essential transitions; no admin animation is required for comprehension.
+
+### 9.7 Verification (17 November 2026)
+
+- `npm run typecheck` — exit 0.
+- `npm run lint` — exit 0.
+- `npm test` — 245 passed, 0 failed.
+- `npm run build` — exit 0, 67 pages generated.
+- `npm run check:contrast` — all storefront checks unchanged and all 14 new administration pairs pass.
+- `npm run check:contrast` now reads `--admin-*` values directly from the `.admin-shell` block, so the documented admin ratios stay in sync with the implementation.
+
+**Limitations:** no administrator account exists in the local environment, so authenticated admin screens could not be browser-driven or screenshot-reviewed. The redesign was verified through static compilation, permission-aware route generation, the production build, token contrast checks, and unauthenticated HTTP checks: `/admin/setup` rendered the Green & White auth shell at HTTP 200, while `/admin/login` and `/admin/mfa/verify` redirected to setup and `/admin`, `/admin/orders`, and `/admin/account` redirected to the sign-in flow. Database schema, migrations, payment/order/product/return logic, permissions, API behaviour, and the storefront were not modified.
+

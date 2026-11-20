@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
-import {
-  Notice,
-  buttonPrimary,
-  panelClass,
-} from "@/components/ui/FormPrimitives";
+import { AdminAuthShell } from "@/components/admin/AdminAuthShell";
+import { Notice, buttonPrimary } from "@/components/ui/FormPrimitives";
 import { adminDismissRecoveryCodesAction } from "@/lib/actions/admin";
 import { readRecoveryCodesForDisplay } from "@/lib/admin/mfa-challenge";
 import { requireAdminPage } from "@/lib/admin/session";
@@ -30,13 +27,13 @@ export default async function AdminMfaCodesPage() {
   }
 
   return (
-    <main className="relative z-10 mx-auto flex min-h-[60vh] w-full max-w-3xl items-start px-4 py-16 sm:px-6 lg:px-8">
-      <section className={panelClass}>
-        <p className="section-eyebrow">Administration</p>
-        <h1 className="heading-editorial mt-3 text-3xl text-white sm:text-4xl">
+    <AdminAuthShell wide>
+      <section>
+        <p className="eyebrow">Administration</p>
+        <h1 className="heading-editorial mt-2 text-2xl text-slate-900 sm:text-3xl">
           Save your recovery codes now
         </h1>
-        <p className="mt-4 text-sm leading-6 text-champagne/80 sm:text-base">
+        <p className="mt-3 text-sm leading-6 text-slate-600 sm:text-base">
           These codes are shown once and are not recoverable later. Store them
           offline, separately from the device that runs your authenticator app.
           Each code can be used once if the app is unavailable.
@@ -54,7 +51,7 @@ export default async function AdminMfaCodesPage() {
           {codes.map((code) => (
             <li
               key={code}
-              className="rounded-brand border border-gold/25 bg-charcoal px-4 py-3 font-mono text-base tracking-widest text-white"
+              className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 font-mono text-base tracking-widest text-slate-900"
             >
               {code}
             </li>
@@ -67,6 +64,6 @@ export default async function AdminMfaCodesPage() {
           </button>
         </form>
       </section>
-    </main>
+    </AdminAuthShell>
   );
 }

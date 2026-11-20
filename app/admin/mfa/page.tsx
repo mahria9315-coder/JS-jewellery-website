@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { AdminAuthShell } from "@/components/admin/AdminAuthShell";
 import { MfaEnrollmentConfirmForm } from "@/components/admin/MfaEnrollmentConfirmForm";
 import { MfaRecoveryRegenerateForm } from "@/components/admin/MfaRecoveryRegenerateForm";
 import { formatDate } from "@/components/admin/AdminUI";
@@ -9,7 +10,6 @@ import {
   buttonPrimary,
   buttonSecondary,
   linkClass,
-  panelClass,
 } from "@/components/ui/FormPrimitives";
 import {
   adminLogoutAction,
@@ -52,13 +52,13 @@ export default async function AdminMfaPage({ searchParams }: PageProps) {
     : null;
 
   return (
-    <main className="relative z-10 mx-auto flex min-h-[60vh] w-full max-w-3xl items-start px-4 py-16 sm:px-6 lg:px-8">
-      <section className={panelClass}>
-        <p className="section-eyebrow">Administration</p>
-        <h1 className="heading-editorial mt-3 text-3xl text-white sm:text-4xl">
+    <AdminAuthShell wide>
+      <section>
+        <p className="eyebrow">Administration</p>
+        <h1 className="heading-editorial mt-2 text-2xl text-slate-900 sm:text-3xl">
           Multi-factor authentication
         </h1>
-        <p className="mt-4 text-sm leading-6 text-champagne/80 sm:text-base">
+        <p className="mt-3 text-sm leading-6 text-slate-600 sm:text-base">
           Protect your administrator account with a time-based authenticator
           app. A password alone never creates a session while an authenticator
           is enrolled.
@@ -184,7 +184,7 @@ export default async function AdminMfaPage({ searchParams }: PageProps) {
           </div>
         )}
 
-        <div className="mt-8 flex flex-wrap items-center gap-3 border-t border-gold/15 pt-5">
+        <div className="mt-8 flex flex-wrap items-center gap-3 border-t border-slate-200 pt-5">
           <Link href="/admin/account" className={linkClass}>
             My account
           </Link>
@@ -195,6 +195,6 @@ export default async function AdminMfaPage({ searchParams }: PageProps) {
           </form>
         </div>
       </section>
-    </main>
+    </AdminAuthShell>
   );
 }

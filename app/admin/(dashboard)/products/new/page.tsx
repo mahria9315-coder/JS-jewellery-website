@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { AdminPageHeader } from "@/components/admin/AdminUI";
 import { ProductForm } from "@/components/admin/ProductForm";
 import { Notice } from "@/components/ui/FormPrimitives";
 import { listSupplierOptions } from "@/lib/admin/products";
@@ -40,23 +41,19 @@ export default async function AdminNewProductPage({
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h2 className="heading-editorial heading-champagne text-2xl">
-            Add a product
-          </h2>
-          <p className="mt-2 text-sm text-champagne/70">
-            Enter only real, confirmed supplier data. Start as a draft until all
-            publication evidence is recorded.
-          </p>
-        </div>
-        <Link
-          href="/admin/products"
-          className="inline-flex min-h-11 items-center text-sm font-semibold text-accent underline decoration-gold/40 underline-offset-4 hover:text-champagne focus-visible:outline-focus"
-        >
-          Back to products
-        </Link>
-      </div>
+      <AdminPageHeader
+        eyebrow="Catalogue"
+        title="Add a product"
+        description="Enter only real, confirmed supplier data. Start as a draft until all publication evidence is recorded."
+        actions={
+          <Link
+            href="/admin/products"
+            className="inline-flex min-h-11 items-center text-sm font-semibold text-emerald-700 underline-offset-4 hover:underline focus-visible:outline-focus"
+          >
+            Back to products
+          </Link>
+        }
+      />
 
       {first(query.error) ? <Notice tone="error">{first(query.error)}</Notice> : null}
 

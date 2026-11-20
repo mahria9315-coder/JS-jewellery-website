@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { AdminPageHeader } from "@/components/admin/AdminUI";
 import {
   Notice,
   buttonDanger,
@@ -55,17 +56,11 @@ export default async function AdminReturnsPage({
 
   return (
     <div className="space-y-8">
-      <div>
-        <h2 className="heading-editorial heading-champagne text-2xl">
-          Returns and refunds
-        </h2>
-        <p className="mt-2 max-w-3xl text-sm text-champagne/70">
-          Refund amounts are calculated on the server under the approved
-          Pakistan policy. Protected cases never receive the 25%
-          change-of-mind deduction. Record a refund only after the money has
-          actually been returned.
-        </p>
-      </div>
+      <AdminPageHeader
+        eyebrow="Operations"
+        title="Returns and refunds"
+        description="Refund amounts are calculated on the server under the approved Pakistan policy. Protected cases never receive the 25% change-of-mind deduction. Record a refund only after the money has actually been returned."
+      />
 
       {first(query.error) ? <Notice tone="error">{first(query.error)}</Notice> : null}
       {reviewed === "approve" ? (

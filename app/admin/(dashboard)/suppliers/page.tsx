@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { AdminPageHeader } from "@/components/admin/AdminUI";
 import {
   Notice,
   buttonPrimary,
@@ -47,16 +48,11 @@ export default async function AdminSuppliersPage({
 
   return (
     <div className="space-y-8">
-      <div>
-        <h2 className="heading-editorial heading-champagne text-2xl">
-          Suppliers
-        </h2>
-        <p className="mt-2 max-w-3xl text-sm text-champagne/70">
-          Supplier contact details, agreements, costs, and notes are private.
-          Create a record only for a real supplier whose identity and agreement
-          you are verifying. Do not invent supplier data.
-        </p>
-      </div>
+      <AdminPageHeader
+        eyebrow="Partners"
+        title="Suppliers"
+        description="Supplier contact details, agreements, costs, and notes are private. Create a record only for a real supplier whose identity and agreement you are verifying. Do not invent supplier data."
+      />
 
       {first(query.error) ? (
         <Notice tone="error">{first(query.error)}</Notice>
@@ -170,7 +166,7 @@ export default async function AdminSuppliersPage({
             supplier.
           </p>
         ) : (
-          <div className="mt-3 overflow-x-auto">
+          <div className="admin-table-wrap mt-3">
             <table className="w-full min-w-[44rem] border-collapse text-left text-sm">
               <thead>
                 <tr className="border-b border-gold/25 text-champagne/70">

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { panelClass } from "@/components/ui/FormPrimitives";
+import { AdminEmptyState, AdminPageHeader } from "@/components/admin/AdminUI";
 import { listRecentAuditLogs } from "@/lib/admin/audit";
 import { requireAdminPage } from "@/lib/admin/session";
 import { pageMetadata } from "@/lib/site";
@@ -20,23 +20,19 @@ export default async function AdminAuditPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h2 className="heading-editorial heading-champagne text-2xl">
-          Audit log
-        </h2>
-        <p className="mt-2 max-w-3xl text-sm text-champagne/70">
-          Sensitive administrator actions are recorded here. Passwords, session
-          secrets, payment account numbers, and supplier documents are never
-          written to this log.
-        </p>
-      </div>
+      <AdminPageHeader
+        eyebrow="Governance"
+        title="Audit log"
+        description="Sensitive administrator actions are recorded here. Passwords, session secrets, payment account numbers, and supplier documents are never written to this log."
+      />
 
       {logs.length === 0 ? (
-        <div className={panelClass}>
-          <p className="text-sm text-champagne/70">No admin actions recorded yet.</p>
-        </div>
+        <AdminEmptyState title="No admin actions recorded yet.">
+          Sensitive actions will appear here as soon as an administrator makes a
+          change.
+        </AdminEmptyState>
       ) : (
-        <div className="overflow-x-auto">
+        <div className="admin-table-wrap">
           <table className="w-full min-w-[48rem] border-collapse text-left text-sm">
             <thead>
               <tr className="border-b border-gold/25 text-champagne/70">

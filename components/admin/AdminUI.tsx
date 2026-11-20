@@ -11,8 +11,8 @@ export function AdminBreadcrumbs({ items }: { items: Breadcrumb[] }) {
   if (items.length === 0) return null;
 
   return (
-    <nav aria-label="Breadcrumb" className="mb-4">
-      <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-champagne/60">
+    <nav aria-label="Breadcrumb" className="mb-3">
+      <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-slate-500">
         {items.map((item, index) => {
           const last = index === items.length - 1;
 
@@ -21,12 +21,17 @@ export function AdminBreadcrumbs({ items }: { items: Breadcrumb[] }) {
               {item.href && !last ? (
                 <Link
                   href={item.href}
-                  className="underline decoration-gold/30 underline-offset-4 hover:text-accent focus-visible:outline-focus"
+                  className="rounded underline-offset-4 transition-colors hover:text-emerald-700 hover:underline focus-visible:outline-focus"
                 >
                   {item.label}
                 </Link>
               ) : (
-                <span aria-current={last ? "page" : undefined}>{item.label}</span>
+                <span
+                  aria-current={last ? "page" : undefined}
+                  className={last ? "font-medium text-slate-600" : undefined}
+                >
+                  {item.label}
+                </span>
               )}
               {!last ? <span aria-hidden="true">/</span> : null}
             </li>
@@ -51,16 +56,16 @@ export function AdminPageHeader({
   actions?: ReactNode;
 }) {
   return (
-    <header className="border-b border-gold/20 pb-5">
+    <header className="border-b border-slate-200 pb-5">
       {breadcrumbs ? <AdminBreadcrumbs items={breadcrumbs} /> : null}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="max-w-3xl">
           {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
-          <h2 className="heading-editorial heading-champagne mt-2 text-2xl sm:text-3xl">
+          <h2 className="heading-editorial mt-2 text-2xl text-slate-900 sm:text-[1.75rem]">
             {title}
           </h2>
           {description ? (
-            <p className="mt-2 text-sm text-champagne/70">{description}</p>
+            <p className="mt-2 text-sm leading-6 text-slate-600">{description}</p>
           ) : null}
         </div>
         {actions ? (
@@ -80,10 +85,34 @@ export function AdminEmptyState({
 }) {
   return (
     <div className={`${panelClass} border-dashed`}>
-      <p className="heading-editorial heading-champagne text-lg">{title}</p>
-      {children ? (
-        <div className="mt-2 text-sm text-champagne/70">{children}</div>
-      ) : null}
+      <div className="flex items-start gap-3">
+        <span
+          aria-hidden="true"
+          className="inline-flex h-9 w-9 flex-none items-center justify-center rounded-lg bg-emerald-50 text-emerald-700"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-4 w-4"
+          >
+            <path d="M4 7h16" />
+            <path d="M7 12h10" />
+            <path d="M10 17h4" />
+          </svg>
+        </span>
+        <div className="min-w-0">
+          <p className="text-base font-semibold text-slate-800">{title}</p>
+          {children ? (
+            <div className="mt-1 text-sm leading-6 text-slate-600">
+              {children}
+            </div>
+          ) : null}
+        </div>
+      </div>
     </div>
   );
 }
@@ -98,11 +127,8 @@ export function AdminTable({
   children: ReactNode;
 }) {
   return (
-    <div className="overflow-x-auto rounded-card border border-gold/20">
-      <table
-        className="w-full border-collapse text-left text-sm"
-        style={{ minWidth }}
-      >
+    <div className="admin-table-wrap">
+      <table className="w-full border-collapse text-left text-sm" style={{ minWidth }}>
         <caption className="sr-only">{caption}</caption>
         {children}
       </table>
@@ -122,9 +148,7 @@ export function AdminTh({
   return (
     <th
       scope={scope}
-      className={`bg-charcoal/70 px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-champagne/70 ${
-        align === "right" ? "text-right" : "text-left"
-      }`}
+      className={align === "right" ? "text-right" : "text-left"}
     >
       {children}
     </th>
@@ -142,9 +166,7 @@ export function AdminTd({
 }) {
   return (
     <td
-      className={`border-t border-gold/10 px-3 py-3 align-top text-champagne ${
-        align === "right" ? "text-right" : "text-left"
-      } ${className}`}
+      className={`${align === "right" ? "text-right" : "text-left"} ${className}`}
     >
       {children}
     </td>
@@ -159,11 +181,11 @@ export function StatusPill({
   tone?: "neutral" | "success" | "warning" | "danger" | "info";
 }) {
   const tones: Record<string, string> = {
-    neutral: "border-gold/30 bg-champagne/[0.04] text-champagne",
-    success: "border-emerald-400/40 bg-emerald-950/25 text-emerald-100",
-    warning: "border-amber-400/40 bg-amber-950/25 text-amber-100",
-    danger: "border-red-400/40 bg-red-950/25 text-red-100",
-    info: "border-sky-400/40 bg-sky-950/25 text-sky-100",
+    neutral: "border-slate-200 bg-slate-50 text-slate-600",
+    success: "border-emerald-200 bg-emerald-50 text-emerald-700",
+    warning: "border-amber-200 bg-amber-50 text-amber-700",
+    danger: "border-red-200 bg-red-50 text-red-700",
+    info: "border-sky-200 bg-sky-50 text-sky-700",
   };
 
   return (

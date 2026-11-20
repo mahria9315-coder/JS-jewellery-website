@@ -295,7 +295,7 @@ export default async function AdminOrderPage({
         <h3 id="admin-order-items" className="heading-editorial heading-champagne text-xl">
           Items and private margin
         </h3>
-        <div className="mt-3 overflow-x-auto">
+        <div className="admin-table-wrap mt-3">
           <table className="w-full min-w-[52rem] border-collapse text-left text-sm">
             <thead>
               <tr className="border-b border-gold/25 text-champagne/70">

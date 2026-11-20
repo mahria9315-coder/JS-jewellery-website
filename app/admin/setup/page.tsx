@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { AdminAuthShell } from "@/components/admin/AdminAuthShell";
 import { FirstAdminSetupForm } from "@/components/admin/FirstAdminSetupForm";
-import { Notice, panelClass } from "@/components/ui/FormPrimitives";
+import { Notice } from "@/components/ui/FormPrimitives";
 import { getAdminReadiness } from "@/lib/admin/config";
 import {
   ADMIN_SETUP_SECRET_ENV,
@@ -41,10 +42,10 @@ export default async function AdminSetupPage() {
 
   if (readiness.state === "database-unconfigured") {
     return (
-      <main className="relative z-10 mx-auto flex min-h-[60vh] w-full max-w-2xl items-center px-4 py-16 sm:px-6 lg:px-8">
-        <section className={panelClass}>
-          <p className="section-eyebrow">Administration</p>
-          <h1 className="heading-editorial mt-3 text-3xl text-white sm:text-4xl">
+      <AdminAuthShell wide>
+        <section>
+          <p className="eyebrow">Administration</p>
+          <h1 className="heading-editorial mt-2 text-2xl text-slate-900 sm:text-3xl">
             First administrator setup
           </h1>
           <div className="mt-6">
@@ -56,16 +57,16 @@ export default async function AdminSetupPage() {
             </Notice>
           </div>
         </section>
-      </main>
+      </AdminAuthShell>
     );
   }
 
   if (readiness.state === "database-error") {
     return (
-      <main className="relative z-10 mx-auto flex min-h-[60vh] w-full max-w-2xl items-center px-4 py-16 sm:px-6 lg:px-8">
-        <section className={panelClass}>
-          <p className="section-eyebrow">Administration</p>
-          <h1 className="heading-editorial mt-3 text-3xl text-white sm:text-4xl">
+      <AdminAuthShell wide>
+        <section>
+          <p className="eyebrow">Administration</p>
+          <h1 className="heading-editorial mt-2 text-2xl text-slate-900 sm:text-3xl">
             First administrator setup
           </h1>
           <div className="mt-6">
@@ -75,20 +76,20 @@ export default async function AdminSetupPage() {
             </Notice>
           </div>
         </section>
-      </main>
+      </AdminAuthShell>
     );
   }
 
   const secretConfigured = isSetupSecretConfigured();
 
   return (
-    <main className="relative z-10 mx-auto flex min-h-[60vh] w-full max-w-2xl items-center px-4 py-16 sm:px-6 lg:px-8">
-      <section className={panelClass}>
-        <p className="section-eyebrow">Administration</p>
-        <h1 className="heading-editorial mt-3 text-3xl text-white sm:text-4xl">
+    <AdminAuthShell wide>
+      <section>
+        <p className="eyebrow">Administration</p>
+        <h1 className="heading-editorial mt-2 text-2xl text-slate-900 sm:text-3xl">
           First administrator setup
         </h1>
-        <p className="mt-4 text-sm leading-6 text-champagne/80 sm:text-base">
+        <p className="mt-3 text-sm leading-6 text-slate-600 sm:text-base">
           Create the initial Super Admin account for this JS Jewellers
           deployment. This setup is available only until the first administrator
           account exists and is protected by a server-configured one-time secret.
@@ -108,12 +109,12 @@ export default async function AdminSetupPage() {
           <FirstAdminSetupForm />
         )}
 
-        <div className="mt-6 border-t border-gold/15 pt-4">
-          <p className="text-sm text-champagne/65">
+        <div className="mt-6 border-t border-slate-200 pt-4">
+          <p className="text-sm text-slate-600">
             Already have an administrator account?{" "}
             <Link
               href="/admin/login"
-              className="font-semibold text-accent underline-offset-4 hover:underline focus-visible:outline-focus"
+              className="font-semibold text-emerald-700 underline-offset-4 hover:underline focus-visible:outline-focus"
             >
               Sign in
             </Link>
@@ -121,6 +122,6 @@ export default async function AdminSetupPage() {
           </p>
         </div>
       </section>
-    </main>
+    </AdminAuthShell>
   );
 }

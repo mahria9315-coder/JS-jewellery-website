@@ -74,6 +74,7 @@ function contrastRatio(first, second) {
  */
 const darkBlock = readBlock(":root");
 const lightBlock = readBlock('html[data-theme="light"]');
+const adminBlock = readBlock(".admin-shell");
 
 function paletteFrom(block, extras) {
   return {
@@ -103,6 +104,60 @@ const shared = {
 
 const dark = paletteFrom(darkBlock, shared);
 const light = paletteFrom(lightBlock, shared);
+
+function readAdminColour(token) {
+  const pattern = new RegExp(`--admin-${token}:\\s*(#[0-9a-fA-F]{6})\\b`);
+  const match = adminBlock.match(pattern);
+
+  if (!match) {
+    throw new Error(`Missing or invalid --admin-${token} in .admin-shell`);
+  }
+
+  return match[1].toLowerCase();
+}
+
+/*
+ * Administration Green & White palette, owner-requested 17 November 2026.
+ * These colours are scoped to `.admin-shell`; the storefront tokens above are
+ * untouched. Text pairs must meet 4.5:1, focus/UI pairs 3:1.
+ */
+const admin = {
+  page: readAdminColour("bg"),
+  surface: readAdminColour("surface"),
+  muted: readAdminColour("surface-muted"),
+  text: readAdminColour("text"),
+  soft: readAdminColour("text-soft"),
+  faint: readAdminColour("text-muted"),
+  border: readAdminColour("border"),
+  primary: readAdminColour("primary"),
+  strong: readAdminColour("primary-strong"),
+  forest: readAdminColour("forest"),
+  softGreen: readAdminColour("primary-soft"),
+  focus: readAdminColour("focus"),
+  warningText: "#b45309",
+  warningBg: "#fffbeb",
+  dangerText: "#b91c1c",
+  dangerBg: "#fef2f2",
+  infoText: "#0369a1",
+  infoBg: "#eff6ff",
+};
+
+const adminChecks = [
+  { label: "Admin heading on page", fg: "text", bg: "page", min: 4.5 },
+  { label: "Admin body on page", fg: "soft", bg: "page", min: 4.5 },
+  { label: "Admin body on white card", fg: "soft", bg: "surface", min: 4.5 },
+  { label: "Admin muted text on white card", fg: "faint", bg: "surface", min: 4.5 },
+  { label: "Admin heading on muted band", fg: "text", bg: "muted", min: 4.5 },
+  { label: "Admin primary action on white", fg: "strong", bg: "surface", min: 4.5 },
+  { label: "White text on admin primary-strong", fg: "surface", bg: "strong", min: 4.5 },
+  { label: "Admin link/accent on soft green", fg: "strong", bg: "softGreen", min: 4.5 },
+  { label: "Admin focus ring on white", fg: "focus", bg: "surface", min: 3 },
+  { label: "Admin focus ring on page", fg: "focus", bg: "page", min: 3 },
+  { label: "Admin warning text on warning tint", fg: "warningText", bg: "warningBg", min: 4.5 },
+  { label: "Admin danger text on danger tint", fg: "dangerText", bg: "dangerBg", min: 4.5 },
+  { label: "Admin info text on info tint", fg: "infoText", bg: "infoBg", min: 4.5 },
+  { label: "Admin success text on soft green", fg: "strong", bg: "softGreen", min: 4.5 },
+];
 
 const darkChecks = [
   // Body and secondary copy on every approved dark surface.
@@ -213,6 +268,7 @@ function runChecks(palette, heading, checks, restricted) {
 
 runChecks(dark, "Black Gold Galaxy (dark, default)", darkChecks, darkRestricted);
 runChecks(light, "Ivory & Gold (light, opt-in)", lightChecks, lightRestricted);
+runChecks(admin, "Administration Green & White (admin only)", adminChecks, []);
 
 if (failed) {
   console.error("Contrast checks failed.");

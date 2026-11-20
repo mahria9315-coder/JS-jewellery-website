@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
+import { AdminAuthShell } from "@/components/admin/AdminAuthShell";
 import { AdminLoginForm } from "@/components/admin/LoginForm";
-import { Notice, panelClass } from "@/components/ui/FormPrimitives";
+import { Notice } from "@/components/ui/FormPrimitives";
 import { getAdminReadiness } from "@/lib/admin/config";
 import { defaultAdminPath } from "@/lib/admin/permissions";
 import { getAdminContext } from "@/lib/admin/session";
@@ -46,62 +47,59 @@ export default async function AdminLoginPage({ searchParams }: LoginPageProps) {
   const safeNext = next.startsWith("/") && !next.startsWith("//") ? next : "";
 
   return (
-    <section aria-labelledby="admin-login-heading">
-      <div className="container-page py-section md:py-section-lg">
-        <div className="mx-auto max-w-md">
-          <p className="eyebrow">Private area</p>
-          <h1
-            id="admin-login-heading"
-            className="heading-page heading-gold mt-3 text-4xl"
-          >
-            Administrator sign in
-          </h1>
-          <p className="body-copy mt-4 text-base">
-            This area is restricted to authorised JS Jewellers staff. Customer
-            and supplier private information is never shown without signing in.
-          </p>
+    <AdminAuthShell>
+      <section aria-labelledby="admin-login-heading">
+        <p className="eyebrow">Private area</p>
+        <h1
+          id="admin-login-heading"
+          className="heading-editorial mt-2 text-2xl text-slate-900 sm:text-3xl"
+        >
+          Administrator sign in
+        </h1>
+        <p className="mt-2 text-sm leading-6 text-slate-600">
+          Sign in with your authorised JS Jewellers administrator account to
+          open the private dashboard.
+        </p>
 
-          <div className={`${panelClass} mt-8`}>
-            {readiness.state === "database-unconfigured" ? (
-              <Notice tone="warning">
-                The database is not configured on this deployment. Set{" "}
-                <span className="font-mono">DATABASE_URL</span> in the server
-                environment before signing in.
-              </Notice>
-            ) : null}
+        <div className="mt-6 space-y-3">
+          {readiness.state === "database-unconfigured" ? (
+            <Notice tone="warning">
+              The database is not configured on this deployment. Set{" "}
+              <span className="font-mono">DATABASE_URL</span> in the server
+              environment before signing in.
+            </Notice>
+          ) : null}
 
-            {readiness.state === "database-error" ? (
-              <Notice tone="error">
-                The database could not be reached. Check the PostgreSQL service
-                and the configured connection string, then try again.
-              </Notice>
-            ) : null}
+          {readiness.state === "database-error" ? (
+            <Notice tone="error">
+              The database could not be reached. Check the PostgreSQL service
+              and the configured connection string, then try again.
+            </Notice>
+          ) : null}
 
-            {readiness.state === "ready" ? (
-              <>
-                {status === "required" ? (
-                  <Notice tone="warning">
-                    Sign in to continue. Your session may have expired.
-                  </Notice>
-                ) : null}
-                {status === "signed-out" ? (
-                  <Notice tone="info">
-                    You have been signed out and your server session was
-                    revoked.
-                  </Notice>
-                ) : null}
-                {status === "setup-complete" ? (
-                  <Notice tone="success">
-                    First-time administrator setup is complete. Sign in with
-                    your new administrator account.
-                  </Notice>
-                ) : null}
-                <AdminLoginForm next={safeNext} />
-              </>
-            ) : null}
-          </div>
+          {readiness.state === "ready" ? (
+            <>
+              {status === "required" ? (
+                <Notice tone="warning">
+                  Sign in to continue. Your session may have expired.
+                </Notice>
+              ) : null}
+              {status === "signed-out" ? (
+                <Notice tone="info">
+                  You have been signed out and your server session was revoked.
+                </Notice>
+              ) : null}
+              {status === "setup-complete" ? (
+                <Notice tone="success">
+                  First-time administrator setup is complete. Sign in with your
+                  new administrator account.
+                </Notice>
+              ) : null}
+              <AdminLoginForm next={safeNext} />
+            </>
+          ) : null}
         </div>
-      </div>
-    </section>
+      </section>
+    </AdminAuthShell>
   );
 }

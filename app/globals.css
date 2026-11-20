@@ -1198,6 +1198,399 @@ html[data-theme="light"] .site-background--home-image::before {
     24px 24px;
 }
 
+/* ---------------------------------------------------------------------------
+ * Administration panel — Green & White design system
+ * Owner-requested admin redesign, 17 November 2026.
+ *
+ * Every rule in this block is scoped to `.admin-shell`, which only wraps the
+ * private administration routes. The public Black Gold Galaxy storefront is
+ * intentionally untouched. The scoped custom properties re-map the existing
+ * semantic utilities (gold/champagne/charcoal) to an emerald-and-white admin
+ * palette, so existing pages inherit the new design without rewriting their
+ * business markup.
+ * ------------------------------------------------------------------------- */
+.admin-shell {
+  color-scheme: light;
+
+  --admin-bg: #f4f7f5;
+  --admin-surface: #ffffff;
+  --admin-surface-muted: #f8fafc;
+  --admin-text: #0f172a;
+  --admin-text-soft: #334155;
+  --admin-text-muted: #64748b;
+  --admin-border: #e2e8e5;
+  --admin-border-strong: #cbd5d1;
+  --admin-primary: #059669;
+  --admin-primary-strong: #047857;
+  --admin-forest: #064e3b;
+  --admin-primary-soft: #ecfdf5;
+  --admin-focus: #065f46;
+  --admin-shadow: 0 1px 2px rgba(15, 23, 42, 0.04),
+    0 12px 32px -26px rgba(15, 23, 42, 0.22);
+
+  /* Remap the existing semantic colour utilities for descendants. */
+  --color-gold: var(--admin-primary);
+  --color-gold-strong: var(--admin-primary-strong);
+  --color-antique: var(--admin-forest);
+  --color-obsidian: var(--admin-bg);
+  --color-charcoal: var(--admin-surface);
+  --color-gold-shadow: var(--admin-primary-soft);
+  --color-brown: var(--admin-surface-muted);
+  --color-bronze: var(--admin-border);
+  --color-champagne: var(--admin-text-soft);
+  --color-white: var(--admin-text);
+  --color-accent: var(--admin-primary-strong);
+  --color-focus: var(--admin-focus);
+  --color-on-gold: #ffffff;
+  --color-header: var(--admin-surface);
+
+  --theme-page: var(--admin-bg);
+  --theme-heading: var(--admin-text);
+  --theme-body: var(--admin-text-soft);
+  --theme-accent: var(--admin-primary-strong);
+  --theme-focus: var(--admin-focus);
+  --theme-elevated: var(--admin-surface);
+  --theme-muted: var(--admin-surface-muted);
+  --theme-bronze: var(--admin-border);
+  --theme-gold-shadow: var(--admin-primary-soft);
+  --theme-header: var(--admin-surface);
+  --theme-heading-hero: var(--admin-text);
+  --theme-heading-primary: var(--admin-primary-strong);
+  --theme-heading-secondary: var(--admin-text);
+  --theme-heading-product: var(--admin-text);
+  --theme-panel-bg: var(--admin-surface);
+  --theme-panel-image: none;
+  --theme-panel-shadow: var(--admin-shadow);
+  --theme-card-shadow: var(--admin-shadow);
+  --theme-card-shadow-hover: var(--admin-shadow);
+
+  min-height: 100vh;
+  background-color: var(--admin-bg);
+  color: var(--admin-text-soft);
+  font-family: var(--font-body);
+}
+
+/* Admin typography is modern, upright, and dashboard-oriented. */
+.admin-shell .heading-editorial,
+.admin-shell .heading-page {
+  font-family: var(--font-body);
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--admin-text);
+}
+
+.admin-shell .heading-gold,
+.admin-shell .heading-champagne,
+.admin-shell .heading-ivory {
+  color: var(--admin-text);
+}
+
+.admin-shell .eyebrow,
+.admin-shell .section-eyebrow {
+  font-family: var(--font-body);
+  font-style: normal;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--admin-primary-strong);
+}
+
+/* Clean white cards with a subtle border and professional shadow. */
+.admin-shell .surface-panel {
+  border-color: var(--admin-border);
+  border-radius: 0.875rem;
+  background-color: var(--admin-surface);
+  background-image: none;
+  box-shadow: var(--admin-shadow);
+}
+
+.admin-shell .surface-panel--muted {
+  background-color: var(--admin-surface-muted);
+}
+
+/* Layout shell and navigation chrome. */
+.admin-grid {
+  display: grid;
+  min-height: 100vh;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.admin-main {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.admin-sidebar {
+  background-color: var(--admin-surface);
+  border-right: 1px solid var(--admin-border);
+}
+
+.admin-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  border-bottom: 1px solid var(--admin-border);
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+}
+
+.admin-brand-mark {
+  display: inline-flex;
+  height: 2.5rem;
+  width: 2.5rem;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background-color: var(--admin-forest);
+}
+
+.admin-nav-link {
+  display: flex;
+  min-height: 2.5rem;
+  align-items: center;
+  gap: 0.7rem;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #475569;
+  transition: background-color 140ms ease, color 140ms ease;
+}
+
+.admin-nav-link:hover {
+  background-color: var(--admin-surface-muted);
+  color: var(--admin-forest);
+}
+
+.admin-nav-link[data-active="true"] {
+  background-color: var(--admin-primary-soft);
+  color: var(--admin-forest);
+  font-weight: 600;
+  box-shadow: inset 3px 0 0 var(--admin-primary);
+}
+
+.admin-nav-section {
+  padding-inline: 0.75rem;
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+@media (min-width: 1024px) {
+  .admin-grid {
+    grid-template-columns: 17rem minmax(0, 1fr);
+  }
+
+  .admin-grid[data-collapsed="true"] {
+    grid-template-columns: 5.5rem minmax(0, 1fr);
+  }
+}
+
+/* Data tables: clean white cards with subtle separators. */
+.admin-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--admin-border);
+  border-radius: 0.875rem;
+  background-color: var(--admin-surface);
+  box-shadow: var(--admin-shadow);
+}
+
+.admin-shell table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.875rem;
+}
+
+.admin-shell thead th {
+  border-bottom: 1px solid var(--admin-border);
+  background-color: var(--admin-surface-muted);
+  color: #475569;
+  padding: 0.7rem 1rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.admin-shell tbody td {
+  border-top: 1px solid #eef2f0;
+  color: var(--admin-text-soft);
+  padding: 0.85rem 1rem;
+  vertical-align: top;
+}
+
+.admin-shell tbody tr:first-child td {
+  border-top: 0;
+}
+
+.admin-shell tbody tr:hover {
+  background-color: var(--admin-surface-muted);
+}
+
+/* Authentication and setup screens. */
+.admin-auth {
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 1rem;
+  background-color: var(--admin-bg);
+  background-image:
+    radial-gradient(900px 520px at 10% 0%, rgba(5, 150, 105, 0.12), transparent 62%),
+    radial-gradient(800px 500px at 94% 100%, rgba(6, 78, 59, 0.1), transparent 62%);
+}
+
+.admin-auth__frame {
+  width: 100%;
+  max-width: 28rem;
+}
+
+.admin-auth__frame--wide {
+  max-width: 46rem;
+}
+
+.admin-auth__card {
+  border: 1px solid var(--admin-border);
+  border-radius: 1.125rem;
+  background-color: var(--admin-surface);
+  box-shadow: 0 26px 70px -48px rgba(6, 78, 59, 0.45);
+  padding: 1.75rem;
+}
+
+@media (min-width: 640px) {
+  .admin-auth__card {
+    padding: 2.25rem;
+  }
+}
+
+.admin-auth__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.admin-auth__brand-name {
+  font-family: var(--font-body);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--admin-forest);
+}
+
+.admin-auth__brand-sub {
+  display: block;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+/* Light-tinted alert utilities used by existing admin forms. */
+.admin-shell .text-amber-100,
+.admin-shell .text-amber-200,
+.admin-shell .text-amber-200\/80 {
+  color: #b45309;
+}
+
+.admin-shell .text-emerald-100,
+.admin-shell .text-emerald-200 {
+  color: #047857;
+}
+
+.admin-shell .text-red-100,
+.admin-shell .text-red-200 {
+  color: #b91c1c;
+}
+
+.admin-shell .text-red-300 {
+  color: #dc2626;
+}
+
+.admin-shell .text-sky-100,
+.admin-shell .text-sky-200 {
+  color: #0369a1;
+}
+
+.admin-shell .bg-amber-950\/20,
+.admin-shell .bg-amber-950\/25,
+.admin-shell .bg-amber-950\/30 {
+  background-color: #fffbeb;
+}
+
+.admin-shell .bg-red-950\/20,
+.admin-shell .bg-red-950\/25 {
+  background-color: #fef2f2;
+}
+
+.admin-shell .bg-emerald-950\/20,
+.admin-shell .bg-emerald-950\/25 {
+  background-color: #ecfdf5;
+}
+
+.admin-shell .bg-sky-950\/25 {
+  background-color: #eff6ff;
+}
+
+.admin-shell .border-amber-400\/40 {
+  border-color: #fcd34d;
+}
+
+.admin-shell .border-red-400\/40,
+.admin-shell .border-red-400\/50 {
+  border-color: #fca5a5;
+}
+
+.admin-shell .border-emerald-400\/40 {
+  border-color: #6ee7b7;
+}
+
+.admin-shell .border-sky-400\/40 {
+  border-color: #7dd3fc;
+}
+
+/* Coloured action buttons keep white text even though the admin token remap
+ * turns the `text-white` utility into the dark body colour elsewhere. */
+.admin-shell .bg-emerald-700,
+.admin-shell .bg-emerald-800 {
+  color: #ffffff;
+}
+
+.admin-shell .hover\:text-red-100:hover {
+  color: #991b1b;
+}
+
+.admin-shell .hover\:bg-black:hover {
+  background-color: var(--admin-surface-muted);
+}
+
+/* Mobile navigation panel. */
+.admin-mobile-nav {
+  border: 1px solid var(--admin-border);
+  border-radius: 0.75rem;
+  background-color: var(--admin-surface);
+}
+
+@media print {
+  .admin-sidebar,
+  .admin-topbar {
+    display: none !important;
+  }
+
+  .admin-grid {
+    display: block;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .card-3d,
   .card-3d-media img,

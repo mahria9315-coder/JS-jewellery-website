@@ -8,9 +8,10 @@ import {
 } from "@/lib/actions/admin";
 import {
   buttonPrimary,
-  inputClass,
   labelClass,
 } from "@/components/ui/FormPrimitives";
+
+import { PasswordInput } from "./PasswordInput";
 
 const initialState: AdminPasswordState = {};
 
@@ -27,8 +28,8 @@ export function AdminPasswordForm() {
           role={state.ok ? "status" : "alert"}
           className={
             state.ok
-              ? "rounded-card border border-emerald-400/40 bg-emerald-950/20 px-4 py-3 text-sm text-emerald-100"
-              : "rounded-card border border-red-400/40 bg-red-950/20 px-4 py-3 text-sm text-red-100"
+              ? "rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700"
+              : "rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
           }
         >
           {state.message}
@@ -39,13 +40,11 @@ export function AdminPasswordForm() {
         <label htmlFor="currentPassword" className={labelClass}>
           Current password
         </label>
-        <input
+        <PasswordInput
           id="currentPassword"
           name="currentPassword"
-          type="password"
           autoComplete="current-password"
           required
-          className={inputClass}
         />
       </div>
 
@@ -53,16 +52,15 @@ export function AdminPasswordForm() {
         <label htmlFor="newPassword" className={labelClass}>
           New password
         </label>
-        <input
+        <PasswordInput
           id="newPassword"
           name="newPassword"
-          type="password"
           autoComplete="new-password"
           required
           minLength={12}
-          className={inputClass}
+          describedBy="new-password-help"
         />
-        <p className="mt-1 text-xs text-champagne/60">
+        <p id="new-password-help" className="mt-1 text-xs text-slate-500">
           Use at least 12 characters. Other signed-in sessions are signed out
           after a password change.
         </p>

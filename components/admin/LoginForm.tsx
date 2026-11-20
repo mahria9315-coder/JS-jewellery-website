@@ -12,6 +12,8 @@ import {
   labelClass,
 } from "@/components/ui/FormPrimitives";
 
+import { PasswordInput } from "./PasswordInput";
+
 const initialState: AdminLoginState = { message: undefined };
 
 export function AdminLoginForm({ next }: { next: string }) {
@@ -27,7 +29,7 @@ export function AdminLoginForm({ next }: { next: string }) {
       {state.message ? (
         <p
           role="alert"
-          className="rounded-card border border-red-400/40 bg-red-950/20 px-4 py-3 text-sm text-red-100"
+          className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
         >
           {state.message}
         </p>
@@ -51,17 +53,19 @@ export function AdminLoginForm({ next }: { next: string }) {
         <label htmlFor="password" className={labelClass}>
           Password
         </label>
-        <input
+        <PasswordInput
           id="password"
           name="password"
-          type="password"
           autoComplete="current-password"
           required
-          className={inputClass}
         />
       </div>
 
-      <button type="submit" className={buttonPrimary} disabled={isPending}>
+      <button
+        type="submit"
+        className={`${buttonPrimary} w-full`}
+        disabled={isPending}
+      >
         {isPending ? "Signing in…" : "Sign in"}
       </button>
     </form>

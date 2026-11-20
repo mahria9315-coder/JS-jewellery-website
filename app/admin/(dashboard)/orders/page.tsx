@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { AdminPageHeader } from "@/components/admin/AdminUI";
 import { AdminSearchForm } from "@/components/admin/AdminSearchForm";
 import { firstParam } from "@/components/admin/AdminQueryNotice";
 import { listOrdersForAdmin } from "@/lib/orders/queries";
@@ -59,14 +60,11 @@ export default async function AdminOrdersPage({ searchParams }: PageProps) {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h2 className="heading-editorial heading-champagne text-2xl">Orders</h2>
-        <p className="mt-2 max-w-3xl text-sm text-champagne/70">
-          Verify each manual payment before changing a payment to VERIFIED. Order
-          status and payment status are separate: confirming an order does not
-          confirm the money.
-        </p>
-      </div>
+      <AdminPageHeader
+        eyebrow="Operations"
+        title="Orders"
+        description="Verify each manual payment before changing a payment to VERIFIED. Order status and payment status are separate: confirming an order does not confirm the money."
+      />
 
       <section className={panelClass} aria-label="Order filters">
         <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto_auto] lg:items-end">
@@ -139,7 +137,7 @@ export default async function AdminOrdersPage({ searchParams }: PageProps) {
           <p className="text-sm text-champagne/70">No orders yet.</p>
         </div>
       ) : (
-        <div className="overflow-x-auto">
+        <div className="admin-table-wrap">
           <table className="w-full min-w-[50rem] border-collapse text-left text-sm">
             <thead>
               <tr className="border-b border-gold/25 text-champagne/70">

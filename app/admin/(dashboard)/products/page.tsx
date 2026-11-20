@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import {
+  AdminEmptyState,
+  AdminPageHeader,
+} from "@/components/admin/AdminUI";
 import { listAdminProducts } from "@/lib/admin/products";
 import { requireAdminPage } from "@/lib/admin/session";
 import {
   buttonPrimary,
-  panelClass,
 } from "@/components/ui/FormPrimitives";
 import { formatPkr } from "@/lib/catalogue";
 import { DEMO_PRODUCT_BADGE, isDemoProduct } from "@/lib/demo-products";
@@ -26,30 +29,24 @@ export default async function AdminProductsPage() {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h2 className="heading-editorial heading-champagne text-2xl">Products</h2>
-          <p className="mt-2 max-w-3xl text-sm text-champagne/70">
-            Every product must be linked to its real supplier. Supplier cost and
-            margin are private. Do not invent products, prices, stock, or image
-            rights.
-          </p>
-        </div>
-        <Link href="/admin/products/new" className={buttonPrimary}>
-          Add product
-        </Link>
-      </div>
+      <AdminPageHeader
+        eyebrow="Catalogue"
+        title="Products"
+        description="Every product must be linked to its real supplier. Supplier cost and margin are private. Do not invent products, prices, stock, or image rights."
+        actions={
+          <Link href="/admin/products/new" className={buttonPrimary}>
+            Add product
+          </Link>
+        }
+      />
 
       {products.length === 0 ? (
-        <div className={panelClass}>
-          <p className="text-sm text-champagne/70">
-            No products exist yet. Add a supplier first, then onboard a real
-            product with its confirmed SKU, price, cost, stock, and image
-            rights.
-          </p>
-        </div>
+        <AdminEmptyState title="No products exist yet.">
+          Add a supplier first, then onboard a real product with its confirmed
+          SKU, price, cost, stock, and image rights.
+        </AdminEmptyState>
       ) : (
-        <div className="overflow-x-auto">
+        <div className="admin-table-wrap">
           <table className="w-full min-w-[54rem] border-collapse text-left text-sm">
             <thead>
               <tr className="border-b border-gold/25 text-champagne/70">

@@ -25,7 +25,7 @@ export function MfaEnrollmentConfirmForm() {
       {state.message ? (
         <p
           role="alert"
-          className="rounded-card border border-red-400/40 bg-red-950/20 px-4 py-3 text-sm text-red-100"
+          className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
         >
           {state.message}
         </p>

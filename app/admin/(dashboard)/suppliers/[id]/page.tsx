@@ -458,7 +458,7 @@ export default async function AdminSupplierPage({
             No products are linked to this supplier yet.
           </p>
         ) : (
-          <div className="mt-3 overflow-x-auto">
+          <div className="admin-table-wrap mt-3">
             <table className="w-full min-w-[46rem] border-collapse text-left text-sm">
               <thead>
                 <tr className="border-b border-gold/25 text-champagne/70">
